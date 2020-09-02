@@ -320,6 +320,9 @@ master节点设置
 
 kubectl taint nodes master1 node-role.kubernetes.io/master=:NoSchedule
 
+master节点删除
+
+kubectl taint nodes k8s-master2 node-role.kubernetes.io/master:NoSchedule-
 
 容忍tolerations主节点的taints
 
@@ -426,3 +429,31 @@ https://cloud.tencent.com/developer/article/1671811
 
 kubelet 会尝试通过 Kubernetes API 服务器为每个静态 Pod 自动创建一个 镜像 Pod。 这意味着节点上运行的静态 Pod 对 API 服务来说是不可见的，但是不能通过 API 服务器来控制
 
+## 查看所有pod
+
+kubectl get pods --all-namespaces
+
+## ResourceQuota
+
+kubectl get resourcequota -n namespace
+kubectl describe resourcequota -n namespace
+
+kubectl get ResourceQuota -A
+
+kubectl get resourcequota namespace --namespace=namespace --output=yaml
+
+
+当一个集群有分配ResourceQuota和对应的Namespace时，部署的pod需要声明request和limit，否正pod启动失败
+开启了resource quota时，用户创建pod，必须指定cpu、内存的 requests or limits ，否则创建失败。resourceQuota搭配 limitRanges口感更佳：limitRange可以配置创建Pod的默认limit/reques
+
+
+在一个多用户、多团队的k8s集群上，通常会遇到一个问题，如何在不同团队之间取得资源的公平，即，不会因为某个流氓团队占据了所有资源，从而导致其他团队无法使用k8s。
+k8s的解决方法是，通过RBAC将不同团队（or 项目）限制在不同的namespace下，通过resourceQuota来限制该namespace能够使用的资源
+
+参考
+
+https://blog.csdn.net/sinron_wu/article/details/106518824
+
+## 设置namespace上下文
+
+kubectl config set-context $(kubectl config current-context) --namespace=sy
