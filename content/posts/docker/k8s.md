@@ -441,7 +441,7 @@ kubectl describe resourcequota -n namespace
 kubectl get ResourceQuota -A
 
 kubectl get resourcequota namespace --namespace=namespace --output=yaml
-
+kubectl get resourcequota eos-system --namespace=eos-system --output=yaml
 
 当一个集群有分配ResourceQuota和对应的Namespace时，部署的pod需要声明request和limit，否正pod启动失败
 开启了resource quota时，用户创建pod，必须指定cpu、内存的 requests or limits ，否则创建失败。resourceQuota搭配 limitRanges口感更佳：limitRange可以配置创建Pod的默认limit/reques
