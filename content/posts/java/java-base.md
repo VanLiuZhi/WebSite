@@ -8,8 +8,8 @@ author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "Java学习笔记"
 resources:
-- name: "/images/base-image"
-  src: "/images/base-image.jpg"
+- name: "base-image"
+  src: "base-image.jpg"
 
 tags: [Java, Note]
 categories: [Java]

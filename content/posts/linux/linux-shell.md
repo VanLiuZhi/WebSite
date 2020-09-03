@@ -1,12 +1,12 @@
 ---
 weight: 1
-title: "linux-shell 环境变量"
+title: "Linux 开发环境 shell 配置"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
 draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
-description: "linux-shell 环境变量"
+description: "Linux 开发环境 shell 配置"
 resources:
 - name: "base-image"
   src: "base-image.jpg"
@@ -20,83 +20,104 @@ toc:
   auto: false
 ---
 
-linux shell学习笔记
+shell 配置和使用 zsh
 
 <!-- more -->
 
-## 定位系统环境变量
+## Xshell
 
-登录shell的时候，默认情况下bash会在几个文件中查找命令，这些文件称为启动文件或环境文件。
-这就是我们经常设置的把某个程序的目录加到环境变量，如果你跟风，用了什么 `item2` 这样的第三方shell，并对系统做了一些修改，那么原来安装的软件默认设置的环境变量就没有了，需要把他们迁移到新的shell中。
+在使用Xshell的时候，出现本地终端排版错误问题，解决方案：文件 - 属性 - 终端 - 高级 - 用CR-LF接受LF(R)
 
-    bash检查的启动文件，取决于你启动shell的方式：
-    - 登录时作为默认登陆shell
-    - 作为非登录shell的交互式shell
-    - 作为运行脚本的非交互shell
-    虽然都是进入了shell，但是它们的环境变量有区别。
+## 安装 zsh
 
-## 登录shell
-这种shell就是你登陆后启动的shell。
+通过命令就可以安装了
 
-常见启动文件：
-- /etc/profile
-- $HOME/.bash_profile&nbsp;&nbsp; $HOME/.bashrc
-- $HOME/.bash_login&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $HOME/.profile
+CentOS 安装：sudo yum install -y zsh
+Ubuntu 安装：sudo apt-get install -y zsh
+在检查下系统的 shell：cat /etc/shells，你会发现多了一个：/bin/zsh
 
-上述是 `bash shell` 的启动文件。如果你使用了一些第三方安装了 `zsh` 应该可以在~目录找到 `.zshrc`。<br/>
-`/etc/profile` 是系统环境变量，剩余的是用户的，每个用户都可以编辑这些文件添加自己的环境变量。
-这些环境变量在启动 `bash shell` 的时候生效。
+安装完成zsh后，再安装oh-my-zsh会自动切换过去，echo $SHELL 可以查看当前shell，如果shell已经切换了，再执行切换命令是不行的
 
-shell会按照按照下列顺序，运行第一个被找到的文件，余下的则被忽略:
-- $HOME/.bash_profile  
-- $HOME/.bash_login
-- $HOME/.profile
+## 安装 oh-my-zsh
 
-注意，这个列表中并没有 `$HOME/.bashrc文件`。这是因为该文件通常通过其他文件运行的，比如在有些Linux系统中 `./bash_profile` 文件会去找有没有 `.bashrc`，有的话先执行它。
+oh-my-zsh 是 zsh 扩展的集合，有了扩展集合包，通过配置zsh文件就能很方便的开启功能
+当然有时候不管用，可能因为扩展包版本的问题，或是相关插件没在扩展包里面，这个时候手动下载插件即可
 
-## 交互式shell
-就是通过命令行启动shell，比如 `/bin/sh 如果安装zsh /bin/zsh` 这种情况不会访问系统变量。
+`sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"`
 
-## 非交互式shell
-最后一种shell是非交互式shell。系统执行shell脚本时用的就是这种shell。不同的地方在于它
-没有命令行提示符。但是当你在系统上运行脚本时，也许希望能够运行一些特定启动的命令。**非交互，理解继承，如果你要编写脚本要知道这是什么情况**
+{% blockquote %}
+最好还是使用官方的安装，遇到用别人的，安装后插件无法识别，我也是奇怪了就是用GitHub的脚本，差距有点大
+{% endblockquote %}
 
-为了处理这种情况，`bash shell` 提供了 `BASH_ENV` 环境变量。当shell启动一个非交互式shell进程时，它会检查这个环境变量来查看要执行的启动文件。如果有指定的文件，shell会执行该文件里的命令，这通常包括shell脚本变量设置。
+常用插件：
 
-在CentOS Linux发行版中，这个环境变量在默认情况下并未设置。如果变量未设置，printenv命令只会返回CLI提示符:
-$ printenv BASH_ENV $
+插件安装，有默认自带的(.oh-my-zsh/plugins)，和通过安装的(.oh-my-zsh/custom/plugins)，两个路径会不一样，在配置文件 .zshrc 中有描述，记得看看
 
-Ubuntu发行版中，变量BASH_ENV也没有被设置。记住，如果变量未设置，echo 命令会显示一个空行，然后返回CLI提示符:
-$ echo $BASH_ENV
+如果是自带就有的，通过修改plugins=(git docker) 这样的形势就可以增加插件，修改后执行 source .zshrc让插件生效，自带没有的（就是自带目录找不到，可以去下载它，然后放到安装目录，这样方便管理自带和下载的，同样修改plugins，然后执行生效），下面给出了常用的两个通过下载安装的插件
 
-那如果BASH_ENV变量没有设置，shell脚本到哪里去获得它们的环境变量呢?别忘了有些shell脚本是通过启动一个子shell来执行的。子shell可以继承父shell导出过的变量。举例来说，如果父shell是登录shell，在/etc/profile、/etc/profile.d/*.sh和$HOME/.bashrc文件中
-设置并导出了变量，用于执行脚本的子shell就能够继承这些变量。 
+1. zsh-syntax-highlighting 语法高亮，能提示错误的语法
 
-    要记住，由父shell设置但并未导出的变量都是局部变量。子shell无法继承局部变量。
-    对于那些不启动子shell的脚本，变量已经存在于当前shell中了。
-    所以就算没有设置BASH_ENV，也可以使用当前shell的局部变量和全局变量。
+在配置插件了加入 zsh-syntax-highlighting，如果不管用，可能就是扩展包没有这个插件，通过手动下载即可。
 
-## 环境变量持久化
+```
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git 
+echo "source ${(q-)PWD}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ${ZDOTDIR:-$HOME}/.zshrc
+```
 
-现在你已经了解了各种shell进程以及对应的环境文件，找出永久性环境变量就容易多了。也可以利用这些文件创建自己的永久性全局变量或局部变量。
-对全局环境变量来说(Linux系统中所有用户都需要使用的变量)，可能更倾向于将新的或修改过的变量设置放在 `/etc/profile` 文件中，但这可不是什么好主意。如果你升级了所用的发行版，这个文件也会跟着更新，那你所有定制过的变量设置可就都没有了。
+or
 
-最好是在 `/etc/profile.d` 目录中创建一个以.sh结尾的文件。把所有新的或修改过的全局环境变 量设置放在这个文件中。
-在大多数发行版中，存储个人用户永久性 `bash shell` 变量的地方是 `$HOME/.bashrc` 文件。这一点适用于所有类型的shell进程。但如果设置了BASH_ENV变量，那么记住，除非它指向的是 $HOME/.bashrc，否则你应该将非交互式shell的用户变量放在别的地方。
-图形化界面组成部分(如GUI客户端)的环境变量可能需要在另外一些配置文件中设置，这和设置 `bash shell` 环境变量的地方不一样。
-你可以把自己的alias设置放在 `$HOME/.bashrc` 启动文件中，使其效果永久化。
+git clone git://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting.git
 
-:sunny:**总结：**<br/>
-全局环境变量可以在对其作出定义的父进程所创建的子进程中使用。局部环境变量只能在定义它们的进程中使用。
-Linux系统使用全局环境变量和局部环境变量存储系统环境信息。可以通过shell的命令行界面或者在shell脚本中访问这些信息。`bash shell` 沿用了最初 `Unix Bourne shell` 定义的那些系统环境变量，也支持很多新的环境变量。PATH环境变量定义了 `bash shell` 在查找可执行命令时的搜索目录。可以修改PATH环境变量来添加自己的搜索目录(甚至是当前目录符号)，以方便程序的运行。也可以创建自用的全局和局部环境变量。一旦创建了环境变量，它在整个shell会话过程中就都是可用的。
+生效 `source ~/.zshrc`
 
-`bash shell` 会在启动时执行几个启动文件。这些启动文件包含了环境变量的定义，可用于为每个bash会话设置标准环境变量。每次登录Linux系统，`bash shell`  都会访问/etc/profile启动文件以及3个针对每个用户的本地启动文件 **:$HOME/.bash_profile、$HOME/.bash_login和$HOME/.profile。** 用户可以在这些文件中定制自己想要的环境变量和启动脚本。
-最后，我们还讨论了环境变量数组。这些环境变量可在单个变量中包含多个值。你可以通过指定索引值来访问其中的单个值，或是通过环境变量数组名来引用所有的值。
+就是下载插件，并加入当前用户的环境变量中
 
-    重点：永久环境变量，用户环境变量，配置顺序也很重要，直接使用符号链接和配置环境变量
+2. 自动补全插件
 
-## ssh免密登录
+- zsh-autosuggestions
+`git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions`
+or
+`git clone git://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions`
+`plugins=(git zsh-autosuggestions)`
 
-ssh-keygen 在本地生成密钥和私钥，有时候会看到带 -t DSA 参数，这是选择加密算法，一般用默认就行。
-把公钥复制到目标机器的authorized_keys中即可
+- incr
+```
+下载 http://mimosa-pudica.net/src/incr-0.2.zsh
+复制插件到扩展包插件目录 .oh-my-zsh/plugins/创建incr文件夹放到该文件夹中
+当前用户环境变量添加 source ~/.oh-my-zsh/plugins/incr/incr*.zsh
+```
 
+上面的命令一气呵成，可能不同的环境，移动文件会不对，提前检查一下
+
+## 配置vim
+
+下载好vim后，通常还需要进行配置，只是想行号显示这种功能我认为是必须的，不然系统报错了告诉你行号你都不知道是哪行。
+
+另外有些系统带了vim，是vi命令启动的，应该是阉割版本，所以还是再重新装一个。
+
+vim配置文件分为系统和用户的，系统修改就是全局的了，所以好的习肯定是修改自己用户的，如果你不知道配置文件在什么地方，打开vim，输入`:version` 即可查看相关信息。
+
+    cd ~ 
+    touch .vimrc
+
+Mac 上的配置文件，比较简单的配置
+
+```
+" Configuration file for vim
+set modelines=0		" CVE-2007-2438
+
+" Normally we use vim-extensions. If you want true vi-compatibility
+" remove change the following statements
+set nocompatible	" Use Vim defaults instead of 100% vi compatibility
+set backspace=2		" more powerful backspacing
+
+" Don't write backup file if vim is being called by "crontab -e"
+au BufWrite /private/tmp/crontab.* set nowritebackup nobackup
+" Don't write backup file if vim is being called by "chpass"
+au BufWrite /private/etc/pw.* set nowritebackup nobackup
+
+let skip_defaults_vim=1
+syntax on
+set nu!
+set autoindent
+```

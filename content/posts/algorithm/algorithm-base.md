@@ -1,24 +1,29 @@
 ---
 weight: 1
 title: "Algorithm 算法学习"
+subtitle: "程序 = 数据结构 + 算法"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
 draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "Algorithm 算法学习"
+featuredImagePreview: "images/base-image.jpg"
+featuredImage: "/images/base-image.jpg"
 resources:
-- name: "base-image"
-  src: "base-image.jpg"
+- name: "featured-image"
+  src: "images/base-image.jpg"
 
 tags: [Algorithm, Note]
 categories: [Algorithm算法]
 
 lightgallery: true
 
-toc:
-  auto: false
+# toc:
+#   auto: false
 ---
+
+<!-- ![image](/images/base-image.jpg) -->
 
 算法相关，对于非科班出身的人来说，只能慢慢学习和体会了
 
