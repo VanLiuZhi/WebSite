@@ -246,7 +246,7 @@ enableEmoji = true
   fingerprint = ""
   # date format
   # 日期格式
-  dateFormat = "2020-06-06"
+  dateFormat = "2006-01-02"
   # website images for Open Graph and Twitter Cards
   # 网站图片, 用于 Open Graph 和 Twitter Cards
   images = ["/logo.png"]
