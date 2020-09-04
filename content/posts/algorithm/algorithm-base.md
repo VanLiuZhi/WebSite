@@ -8,8 +8,8 @@ draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "Algorithm 算法学习"
-featuredImagePreview: "images/base-image.jpg"
-featuredImage: "/images/base-image.jpg"
+# featuredImagePreview: "images/base-image.jpg"
+# featuredImage: "/images/base-image.jpg"
 resources:
 - name: "featured-image"
   src: "images/base-image.jpg"
