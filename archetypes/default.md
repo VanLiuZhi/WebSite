@@ -19,8 +19,8 @@ categories:
 
 lightgallery: true
 
-# toc:
-#   auto: false
+toc:
+  auto: false
 ---
 
 
