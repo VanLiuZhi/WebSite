@@ -293,54 +293,6 @@ ibm-app-cluster-critical	IBM	900000000	选择在创建集群时部署到 ibm-sys
 `kubectl get priorityclasses`
 `kubectl get priorityclass <priority_class> -o yaml > Downloads/priorityclass.yaml`
 
-## Taints与Tolerations 污点和容忍
-
-```
-kubectl taint node [node] key=value[effect]   
-     其中[effect] 可取值: [ NoSchedule | PreferNoSchedule | NoExecute ]
-      NoSchedule: 一定不能被调度
-      PreferNoSchedule: 尽量不要调度
-      NoExecute: 不仅不会调度, 还会驱逐Node上已有的Pod
-
-kubectl taint node node1 key1=value1:NoSchedule
-kubectl taint node node1 key1=value1:NoExecute
-kubectl taint node node1 key2=value2:NoSchedule
-```
-
-kubectl describe node node1
-
-删除
-
-kubectl taint node node1 key1:NoSchedule-  # 这里的key可以不用指定value
-kubectl taint node node1 key1:NoExecute-
-# kubectl taint node node1 key1-  删除指定key所有的effect
-kubectl taint node node1 key2:NoSchedule-
-
-master节点设置
-
-kubectl taint nodes master1 node-role.kubernetes.io/master=:NoSchedule
-
-master节点删除
-
-kubectl taint nodes k8s-master2 node-role.kubernetes.io/master:NoSchedule-
-
-容忍tolerations主节点的taints
-
-以上面为 master1 设置的 taints 为例, 你需要为你的 yaml 文件中添加如下配置, 才能容忍 master 节点的污点
-
-在 pod 的 spec 中设置 tolerations 字段
-
-```
-tolerations:
-- key: "node-role.kubernetes.io/master"
-  operator: "Equal"
-  value: ""
-  effect: "NoSchedule"
-```
-
-
-## 亲和性和非亲和性
-
 ## Jsonnet
 
 Jsonnet 是一个帮助你定义JSON的数据的特殊配置语言。Jsonnet 可以对JSON结构里面的元素进行运算，就像模版引擎给纯文本带来好处一样
