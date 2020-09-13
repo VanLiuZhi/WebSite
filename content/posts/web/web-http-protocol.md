@@ -1,5 +1,5 @@
 ---
-weight: 1
+weight: 1000
 title: "http-protocol 协议"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -9,7 +9,7 @@ authorLink: "https://www.liuzhidream.com"
 description: "http-protocol 协议"
 resources:
 - name: "base-image"
-  src: "base-image.jpg"
+  src: "/images/base-image.jpg"
 
 tags: [Http, Note]
 categories: [Web]

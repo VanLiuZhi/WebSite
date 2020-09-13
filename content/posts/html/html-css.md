@@ -1,5 +1,5 @@
 ---
-weight: 1
+weight: 1000
 title: "css 在 web 开发中常见操作与学习总结"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -9,7 +9,7 @@ authorLink: "https://www.liuzhidream.com"
 description: "css 在 web 开发中常见操作与学习总结"
 resources:
 - name: "base-image"
-  src: "base-image.jpg"
+  src: "/images/base-image.jpg"
 
 tags: [Css, Html]
 categories: [Css]

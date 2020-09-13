@@ -1,7 +1,6 @@
 ---
-weight: 1
+weight: 1000
 title: "Docker 容器在 web 开发中的运用"
-subtitle: "容器技术"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
 draft: false
@@ -10,7 +9,7 @@ authorLink: "https://www.liuzhidream.com"
 description: "Docker 容器在 web 开发中的运用"
 resources:
 - name: "base-image"
-  src: "base-image.jpg"
+  src: "/images/base-image.jpg"
 
 tags: [Linux, Docker, Note]
 categories: [Web开发]

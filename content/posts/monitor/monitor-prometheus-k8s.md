@@ -1,5 +1,5 @@
 ---
-weight: 1
+weight: 1000
 title: "kube-prometheus 监控 kubernets 总结"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -9,7 +9,7 @@ authorLink: "https://www.liuzhidream.com"
 description: "kube-prometheus 监控 kubernets 总结"
 resources:
 - name: "base-image"
-  src: "base-image.jpg"
+  src: "/images/base-image.jpg"
 
 tags: [Linux, Docker, Note, Cloud]
 categories: [Cloud-Native]

@@ -1,5 +1,5 @@
 ---
-weight: 1
+weight: 1000
 title: "Django的默认服务器"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -9,7 +9,7 @@ authorLink: "https://www.liuzhidream.com"
 description: "Django的默认服务器"
 resources:
 - name: "base-image"
-  src: "base-image.jpg"
+  src: "/images/base-image.jpg"
 
 tags: [Python, Web, Technology]
 categories: [Technology技术]

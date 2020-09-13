@@ -1,5 +1,5 @@
 ---
-weight: 1
+weight: 1000
 title: "nvm 环境管理工具"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -9,7 +9,7 @@ authorLink: "https://www.liuzhidream.com"
 description: "nvm 环境管理工具"
 resources:
 - name: "base-image"
-  src: "base-image.jpg"
+  src: "/images/base-image.jpg"
 
 tags: [Node.js, Note]
 categories: [Node.js]

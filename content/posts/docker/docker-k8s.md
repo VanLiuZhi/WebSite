@@ -1,5 +1,5 @@
 ---
-weight: 1
+weight: 1000
 title: "Kubernetes 笔记"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -9,7 +9,7 @@ authorLink: "https://www.liuzhidream.com"
 description: "Kubernetes 笔记"
 resources:
 - name: "base-image"
-  src: "base-image.jpg"
+  src: "/images/base-image.jpg"
 
 tags: [Linux, Docker, Note]
 categories: [Web开发]
@@ -293,6 +293,51 @@ ibm-app-cluster-critical	IBM	900000000	选择在创建集群时部署到 ibm-sys
 `kubectl get priorityclasses`
 `kubectl get priorityclass <priority_class> -o yaml > Downloads/priorityclass.yaml`
 
+## Taints与Tolerations 污点和容忍
+
+```
+kubectl taint node [node] key=value[effect]   
+     其中[effect] 可取值: [ NoSchedule | PreferNoSchedule | NoExecute ]
+      NoSchedule: 一定不能被调度
+      PreferNoSchedule: 尽量不要调度
+      NoExecute: 不仅不会调度, 还会驱逐Node上已有的Pod
+
+kubectl taint node node1 key1=value1:NoSchedule
+kubectl taint node node1 key1=value1:NoExecute
+kubectl taint node node1 key2=value2:NoSchedule
+```
+
+kubectl describe node node1
+
+删除
+
+kubectl taint node node1 key1:NoSchedule-  # 这里的key可以不用指定value
+kubectl taint node node1 key1:NoExecute-
+# kubectl taint node node1 key1-  删除指定key所有的effect
+kubectl taint node node1 key2:NoSchedule-
+
+master节点设置
+
+kubectl taint nodes master1 node-role.kubernetes.io/master=:NoSchedule
+
+
+容忍tolerations主节点的taints
+
+以上面为 master1 设置的 taints 为例, 你需要为你的 yaml 文件中添加如下配置, 才能容忍 master 节点的污点
+
+在 pod 的 spec 中设置 tolerations 字段
+
+```
+tolerations:
+- key: "node-role.kubernetes.io/master"
+  operator: "Equal"
+  value: ""
+  effect: "NoSchedule"
+```
+
+
+## 亲和性和非亲和性
+
 ## Jsonnet
 
 Jsonnet 是一个帮助你定义JSON的数据的特殊配置语言。Jsonnet 可以对JSON结构里面的元素进行运算，就像模版引擎给纯文本带来好处一样
@@ -353,9 +398,9 @@ https://kubernetes.io/zh/docs/tasks/extend-kubernetes/custom-resources/custom-re
 
 参考 https://zhuanlan.zhihu.com/p/33390023
 
-- CRI（Container Runtime Interface）：容器运行时接口，提供计算资源
-- CNI（Container Network Interface）：容器网络接口，提供网络资源
-- CSI（Container Storage Interface）：容器存储接口，提供存储资源
+CRI（Container Runtime Interface）：容器运行时接口，提供计算资源
+CNI（Container Network Interface）：容器网络接口，提供网络资源
+CSI（Container Storage Interface）：容器存储接口，提供存储资源
 
 ## 容器重启策略
 
@@ -380,65 +425,4 @@ https://cloud.tencent.com/developer/article/1671811
 静态 Pod 永远都会绑定到一个指定节点上的 Kubelet。
 
 kubelet 会尝试通过 Kubernetes API 服务器为每个静态 Pod 自动创建一个 镜像 Pod。 这意味着节点上运行的静态 Pod 对 API 服务来说是不可见的，但是不能通过 API 服务器来控制
-
-## 查看所有pod
-
-kubectl get pods --all-namespaces
-
-## ResourceQuota(配额)
-
-kubectl get resourcequota -n namespace
-kubectl describe resourcequota -n namespace
-
-kubectl get ResourceQuota -A
-
-kubectl get resourcequota namespace --namespace=namespace --output=yaml
-
-当一个集群有分配ResourceQuota和对应的Namespace时，部署的pod需要声明request和limit，否正pod启动失败
-开启了resource quota时，用户创建pod，必须指定cpu、内存的 requests or limits ，否则创建失败。resourceQuota搭配 limitRanges口感更佳：limitRange可以配置创建Pod的默认limit/reques
-
-在一个多用户、多团队的k8s集群上，通常会遇到一个问题，如何在不同团队之间取得资源的公平，即，不会因为某个流氓团队占据了所有资源，从而导致其他团队无法使用k8s。
-k8s的解决方法是，通过RBAC将不同团队（or 项目）限制在不同的namespace下，通过resourceQuota来限制该namespace能够使用的资源
-
-配置参考，通过命名空间去绑定，如果要制空配额设置，可用删除资源对象，或者把spec部分注释掉
-
-```yaml
-apiVersion: v1
-kind: ResourceQuota
-metadata:
-  name: quota-test
-  namespace: test
-spec:
-  hard:
-    requests.cpu: "2"
-    requests.memory: 2Gi
-    limits.cpu: "4"
-    limits.memory: 4Gi
-    requests.nvidia.com/gpu: 4
-    pods: "3"
-    services: "6"
-```
-
-参考
-
-https://blog.csdn.net/sinron_wu/article/details/106518824
-
-## 设置namespace上下文
-
-kubectl config set-context $(kubectl config current-context) --namespace=sy
-
-## k8s中的各种ip
-
-1. NODE IP
-
-也称为INTERNAL-IP，通过 `kubectl get node -o wide` 查看到的就是INTERNAL-IP
-
-2. POD IP
-
-pod网络的IP地址，是每个POD分配的虚拟IP，可以使用 `kubectl get pod -o wide` 来查看
-
-3. CLUSTER-IP
-
-它是Service的地址,是一个虚拟地址（无法ping），是使用kubectl create时，--port 所指定的端口绑定的IP,各Service中的pod都可以使用CLUSTER-IP:port的方式相互访问（当然更应该使用ServiceName:port的方式）可以使用`kubectl get svc -o wide`进行查看
-
 

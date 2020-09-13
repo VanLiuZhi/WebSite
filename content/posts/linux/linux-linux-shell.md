@@ -1,5 +1,5 @@
 ---
-weight: 1
+weight: 1000
 title: "linux-shell 环境变量"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -9,7 +9,7 @@ authorLink: "https://www.liuzhidream.com"
 description: "linux-shell 环境变量"
 resources:
 - name: "base-image"
-  src: "base-image.jpg"
+  src: "/images/base-image.jpg"
 
 tags: [Linux, Note]
 categories: [操作系统]

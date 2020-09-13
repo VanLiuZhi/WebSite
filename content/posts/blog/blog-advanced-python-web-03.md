@@ -1,5 +1,5 @@
 ---
-weight: 1
+weight: 1000
 title: "python web 开发(三) 使用Docker部署项目"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -9,7 +9,7 @@ authorLink: "https://www.liuzhidream.com"
 description: "python web 开发(三) 使用Docker部署项目"
 resources:
 - name: "base-image"
-  src: "base-image.jpg"
+  src: "/images/base-image.jpg"
 
 tags: [Python, Web, Technology]
 categories: [Technology技术]

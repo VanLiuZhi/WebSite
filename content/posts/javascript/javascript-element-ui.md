@@ -1,5 +1,5 @@
 ---
-weight: 1
+weight: 1000
 title: "element-UI 前端 Vue UI 组件"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -9,7 +9,7 @@ authorLink: "https://www.liuzhidream.com"
 description: "element-UI 前端 Vue UI 组件"
 resources:
 - name: "base-image"
-  src: "base-image.jpg"
+  src: "/images/base-image.jpg"
 
 tags: [JavaScript, Framework, Note]
 categories: [JavaScript]

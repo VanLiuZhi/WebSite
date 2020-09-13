@@ -8,11 +8,11 @@ draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "K8s Upgrade Version"
-featuredImagePreview: "images/base-image.jpg"
-featuredImage: "/images/base-image.jpg"
-resources:
-- name: "featured-image"
-  src: "images/base-image.jpg"
+# featuredImagePreview: "images/base-image.jpg"
+# featuredImage: "/images/base-image.jpg"
+# resources:
+# - name: "featured-image"
+#   src: "images/base-image.jpg"
 
 tags: [cloud-native, k8s]
 categories: [Kubernetes] 
@@ -90,3 +90,6 @@ docker tag kubesphere/kube-controller-manager:v1.18.8 k8s.gcr.io/kube-controller
 ## 自建CRD
 
 https://www.servicemesher.com/blog/kubernetes-crd-quick-start/
+
+## 
+

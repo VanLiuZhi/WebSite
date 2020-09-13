@@ -1,5 +1,5 @@
 ---
-weight: 1
+weight: 1000
 title: "vscode 配置"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -9,7 +9,7 @@ authorLink: "https://www.liuzhidream.com"
 description: "vscode 配置"
 resources:
 - name: "base-image"
-  src: "base-image.jpg"
+  src: "/images/base-image.jpg"
 
 tags: [Technology]
 categories: [Technology技术]

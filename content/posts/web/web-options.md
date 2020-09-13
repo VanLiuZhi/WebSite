@@ -1,5 +1,5 @@
 ---
-weight: 1
+weight: 1000
 title: "前后端分类中OPTIONS请求，如何避免OPTIONS请求"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -9,7 +9,7 @@ authorLink: "https://www.liuzhidream.com"
 description: "前后端分类中OPTIONS请求，如何避免OPTIONS请求"
 resources:
 - name: "base-image"
-  src: "base-image.jpg"
+  src: "/images/base-image.jpg"
 
 tags: [Web, Note]
 categories: [Web]

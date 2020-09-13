@@ -1,5 +1,5 @@
 ---
-weight: 1
+weight: 1000
 title: "Vue 渐进式前端框架"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -9,7 +9,7 @@ authorLink: "https://www.liuzhidream.com"
 description: "Vue 渐进式前端框架"
 resources:
 - name: "base-image"
-  src: "base-image.jpg"
+  src: "/images/base-image.jpg"
 
 tags: [JavaScript, Framework, Note, Vue]
 categories: [JavaScript]
