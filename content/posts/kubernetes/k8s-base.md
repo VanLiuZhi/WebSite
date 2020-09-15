@@ -11,8 +11,8 @@ resources:
 - name: "base-image"
   src: "/images/base-image.jpg"
 
-tags: [Linux, Docker, Note]
-categories: [Web开发]
+tags: [cloud-native, k8s]
+categories: [Kubernetes] 
 
 lightgallery: true
 

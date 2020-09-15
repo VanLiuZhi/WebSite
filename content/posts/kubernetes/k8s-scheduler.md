@@ -14,8 +14,8 @@ resources:
 - name: "featured-image"
   src: "images/base-image.jpg"
 
-tags: [Note]
-categories: [Cloud-Native]
+tags: [cloud-native, k8s]
+categories: [Kubernetes] 
 
 lightgallery: true
 

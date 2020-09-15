@@ -60,17 +60,30 @@ EOF
 我们从Docker Huber拉取镜像，kubesphere这个owner下会定期同步官方镜像，基本上很全面了
 
 ```sh
-docker pull kubesphere/kube-proxy:v1.18.8
-docker pull kubesphere/kube-scheduler:v1.18.8
-docker pull kubesphere/kube-apiserver:v1.18.8
-docker pull kubesphere/kube-controller-manager:v1.18.8
+sudo docker pull kubesphere/kube-proxy:v1.15.1
+sudo docker pull kubesphere/kube-scheduler:v1.15.1
+sudo docker pull kubesphere/kube-apiserver:v1.15.1
+sudo docker pull kubesphere/kube-controller-manager:v1.15.1
+
+# 使用阿里的仓库
+sudo docker pull registry.aliyuncs.com/google_containers/kube-proxy:v1.15.1
+sudo docker pull registry.aliyuncs.com/google_containers/kube-scheduler:v1.15.1
+sudo docker pull registry.aliyuncs.com/google_containers/kube-apiserver:v1.15.1
+sudo docker pull registry.aliyuncs.com/google_containers/kube-controller-manager:v1.15.1
 ```
 
 ```sh
-docker tag kubesphere/kube-proxy:v1.18.8 k8s.gcr.io/kube-proxy:v1.18.8
-docker tag kubesphere/kube-scheduler:v1.18.8 k8s.gcr.io/kube-scheduler:v1.18.8
-docker tag kubesphere/kube-apiserver:v1.18.8 k8s.gcr.io/kube-apiserver:v1.18.8
-docker tag kubesphere/kube-controller-manager:v1.18.8 k8s.gcr.io/kube-controller-manager:v1.18.8
+sudo docker tag registry.aliyuncs.com/google_containers/kube-proxy:v1.15.1 k8s.gcr.io/kube-proxy:v1.15.1
+sudo docker tag registry.aliyuncs.com/google_containers/kube-scheduler:v1.15.1 k8s.gcr.io/kube-scheduler:v1.15.1
+sudo docker tag registry.aliyuncs.com/google_containers/kube-apiserver:v1.15.1 k8s.gcr.io/kube-apiserver:v1.15.1
+sudo docker tag registry.aliyuncs.com/google_containers/kube-controller-manager:v1.15.1 k8s.gcr.io/kube-controller-manager:v1.15.1
+```
+
+```sh
+sudo docker save k8s.gcr.io/kube-proxy:v1.15.1 > kube-proxy.tar
+sudo docker save k8s.gcr.io/kube-scheduler:v1.15.1 > kube-scheduler.tar
+sudo docker save k8s.gcr.io/kube-apiserver:v1.15.1 > kube-apiserver.tar
+sudo docker save k8s.gcr.io/kube-controller-manager:v1.15.1 > kube-controller-manager.tar
 ```
 
 ## kubeadm 
@@ -81,15 +94,73 @@ docker tag kubesphere/kube-controller-manager:v1.18.8 k8s.gcr.io/kube-controller
 
 升级1.18.8版本
 
-`yum install kubeadm-1.18.8-0 --disableexcludes=kubernetes`
+`yum install kubeadm-1.15.1-0 --disableexcludes=kubernetes`
+
+yum install kubeadm-1.16.1-0 --disableexcludes=kubernetes
 
 查看是否升级成功
 
 `kubeadm version`
 
+kubeadm upgrade plan
+`kubeadm upgrade apply v1.15.1`
+yum install -y kubelet-1.15.1-0 kubectl-1.15.1-0 --disableexcludes=kubernetes
+systemctl daemon-reload
+systemctl restart kubelet
+
+yum install -y kubelet-1.15.1-0  --disableexcludes=kubernetes
+yum install -y kubeadm-1.15.1-0 --disableexcludes=kubernetes
+yum install -y kubectl-1.15.1-0 --disableexcludes=kubernetes
+
+kubeadm upgrade node 
+
+unset http_proxy
+unset https_proxy
+
+### 升级master节点
+
+kubeadm upgrade apply v1.15.1
+yum install -y kubelet-1.15.1-0 kubectl-1.15.1-0 --disableexcludes=kubernetes
+systemctl daemon-reload
+systemctl daemon-reload
+
+### 升级worker节点
+
+yum install -y kubeadm-1.15.1-0 --disableexcludes=kubernetes
+yum install -y kubelet-1.15.1-0  --disableexcludes=kubernetes
+
 ## 自建CRD
 
 https://www.servicemesher.com/blog/kubernetes-crd-quick-start/
 
-## 
+## 自建CRD
+
+https://www.servicemesher.com/blog/kubernetes-crd-quick-start/
+
+## 注意
+
+主要组件是跟者版本走的，但是插件是有兼容性的，比如coredns，可能1.14到1.15都可以用一个版本，但是kube-proxy不行，kube-proxy必须跟者版本走
+如果当前coredns不满足条件了，那么应该根据kubeadm升级计划的提示准备对应的镜像
+
+kube-scheduler 和 kube-controller-manager 可以以集群模式运行，通过 leader 选举产生一个工作进程，其它进程处于阻塞模式。
+
+kube-apiserver 可以运行多个实例，但对其它组件需要提供统一的访问地址，本章节部署 Kubernetes 高可用集群实际就是利用 HAProxy + Keepalived 配置该组件
+
+## 参考
+
+https://www.jianshu.com/p/977a7169bf66
+
+https://www.jianshu.com/p/d42ef0eff63f
+
+https://www.jianshu.com/p/fe847170d050
+
+## 高可用方案
+
+https://blog.csdn.net/horsefoot/article/details/52247277
+
+http://dockone.io/article/8721
+
+百度 kubernetes 高可用集群
+
+
 

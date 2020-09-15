@@ -595,3 +595,39 @@ df -h 就能查看到扩容的大小了(如果不更新的话，显示还是原�
 
 扩容完成后，fdisk -l 硬盘显示是分散的，重启后，就并列展示了。一般不需要刻意重启
 
+## yum 回退版本
+
+当我们使用yum install 升级了软件版本的时候，如果想回退，yum提供了回退的功能，而不是选择旧版本号安装，那样一般是无效的，也不用卸载了重装
+
+`yum history list all` 查看当前可以回滚的历史
+
+```sh
+~ » sudo yum history list all                                                                                                        vagrant@cluster1
+已加载插件：fastestmirror
+Repository cr is listed more than once in the configuration
+Repository fasttrack is listed more than once in the configuration
+ID     | 登录用户                 | 日期和时间       | 操作           | 变更数
+-------------------------------------------------------------------------------
+    15 | vagrant <vagrant>        | 2020-09-11 14:09 | Update         |    1
+    14 | vagrant <vagrant>        | 2019-09-23 15:48 | Install        |    4
+    13 | vagrant <vagrant>        | 2019-09-23 15:46 | Erase          |    2 EE
+    12 | vagrant <vagrant>        | 2019-09-23 15:45 | Erase          |    1
+    11 | vagrant <vagrant>        | 2019-09-23 15:45 | Erase          |    1
+    10 | vagrant <vagrant>        | 2019-09-23 15:19 | I, U           |  169 EE
+     9 | vagrant <vagrant>        | 2019-09-22 15:49 | Install        |    1
+     8 | vagrant <vagrant>        | 2019-09-22 11:35 | Install        |   10
+     7 | vagrant <vagrant>        | 2019-09-22 11:29 | I, U           |   12
+     6 | vagrant <vagrant>        | 2019-09-22 11:22 | Update         |    1
+     5 | vagrant <vagrant>        | 2019-04-16 01:51 | Install        |    1
+     4 | vagrant <vagrant>        | 2019-04-15 15:27 | Install        |    8
+     3 | vagrant <vagrant>        | 2019-04-15 15:24 | Install        |   36
+     2 | vagrant <vagrant>        | 2019-04-15 15:23 | I, U           |   31
+     1 | 系统 <空>                | 2019-02-28 20:50 | Install        |  320
+history list
+```
+
+通常，我们回退最近的版本就行了，也就是id 15的
+
+`yum history info 15` 可以查看这个版本的一些操作记录和依赖
+`yum history undo 15` 回滚，假如kubeadm被升级到了一个很高的版本，通过回退发现已经回退到原来的旧版本了
+
