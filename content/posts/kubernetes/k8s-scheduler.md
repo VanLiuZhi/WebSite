@@ -1,6 +1,6 @@
 ---
-weight: 1
-title: "K8s Scheduler"
+weight: 1103
+title: "K8s Scheduler 调度相关总结"
 subtitle: "K8s Scheduler"
 date: 2020-09-07T16:44:29+08:00
 lastmod: 2020-09-07T16:44:29+08:00
@@ -8,11 +8,11 @@ draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "K8s Scheduler"
-# featuredImagePreview: "images/base-image.jpg"
-# featuredImage: "/images/base-image.jpg"
-resources:
-- name: "featured-image"
-  src: "images/base-image.jpg"
+featuredImagePreview: "/images/Kubernetes/k8s-scheduler.jpg"
+featuredImage: "/images/Kubernetes/k8s-scheduler.jpg"
+# resources:
+# - name: "featured-image"
+#   src: "images/base-image.jpg"
 
 tags: [cloud-native, k8s]
 categories: [Kubernetes] 
@@ -23,7 +23,7 @@ toc:
   auto: false
 ---
 
-kubernetes Pod 调度策略 Scheduler
+kubernetes Pod 调度策略，包括亲和性，污点容忍，优先级等运用
 
 <!--more-->
 

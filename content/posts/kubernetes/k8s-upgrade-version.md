@@ -1,6 +1,6 @@
 ---
-weight: 1
-title: "K8s Upgrade Version"
+weight: 1104
+title: "K8s 版本升级实践总结"
 subtitle: "K8s Upgrade Version"
 date: 2020-09-11T09:49:00+08:00
 lastmod: 2020-09-11T09:49:00+08:00
@@ -8,8 +8,8 @@ draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "K8s Upgrade Version"
-# featuredImagePreview: "images/base-image.jpg"
-# featuredImage: "/images/base-image.jpg"
+featuredImagePreview: "/images/Kubernetes/k8s-upgrade.jpg"
+featuredImage: "/images/Kubernetes/k8s-upgrade.jpg"
 # resources:
 # - name: "featured-image"
 #   src: "images/base-image.jpg"
@@ -23,7 +23,7 @@ toc:
   auto: false
 ---
 
-kubernetes版本升级
+kubernetes新版本都会优化很多功能，完善系统稳定性，本文将指导升级k8s到新版本，升级流程与踩坑实践
 
 <!--more-->
 

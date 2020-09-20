@@ -1,5 +1,5 @@
 ---
-weight: 1
+weight: 2201
 title: "Java stream"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00

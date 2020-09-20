@@ -1,5 +1,5 @@
 ---
-weight: 10000
+weight: 1101
 title: "Kubernetes 笔记"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -7,9 +7,11 @@ draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "Kubernetes 笔记"
-resources:
-- name: "base-image"
-  src: "/images/base-image.jpg"
+featuredImagePreview: "/images/Kubernetes/k8s-base.png"
+featuredImage: "/images/Kubernetes/k8s-base.png"
+# resources:
+# - name: "featured-image"
+#   src: "images/base-image.jpg"
 
 tags: [cloud-native, k8s]
 categories: [Kubernetes] 

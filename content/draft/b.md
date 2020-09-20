@@ -1,23 +1,25 @@
 
-分类：
+分类：  
 
-Kubernetes
+排序：3位数是一类的排序权重，4位是整体顺序
 
-ServiceMesh
+Kubernetes 1100
 
-Cloud-Native
+ServiceMesh 2200
 
-Java-MicroServices
+Cloud-Native 3300
 
-Python
+Java-MicroServices 4400
 
-Clear-Mind
+Python 5500
 
-Linux与运维
+Clear-Mind 6600
 
-FrontEnd(前端)
+Linux与运维 7700
 
-Middleware(中间件)
+FrontEnd(前端) 8800
+
+Middleware(中间件) 9900
 
 标签:
 
