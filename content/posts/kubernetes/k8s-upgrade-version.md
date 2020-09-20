@@ -31,7 +31,19 @@ kubernetes新版本都会优化很多功能，完善系统稳定性，本文将�
 
 kubernetes新版本都会优化很多功能，完善系统稳定性，本文将指导升级k8s到新版本
 
+我们采用kubeadm来升级k8s
+
+{{< admonition danger 特别注意 >}}
+要特别注意的一点就是，kubeadmin只能一个版本一个版本的升级，就是假如你是1.14.1只能先升级到1.15.1，然后升级1.16.1，不能一次夸很大的版本
+{{< /admonition >}}
+
+注意自己机器的配置，遇到过swp没有设置永久生效，导致升级重启后可能docker无法运行镜像的
+
+kubectl -n kube-system get cm kubeadm-config -oyaml  查看配置文件
+
 ### 切换yum源
+
+相关软件，比如kubelet，kubeadm都是需要科学上网的，可以换用阿里云的源
 
 ```sh
 cat <<EOF > /etc/yum.repos.d/kubernetes.repo
@@ -105,12 +117,18 @@ yum install kubeadm-1.16.1-0 --disableexcludes=kubernetes
 kubeadm upgrade plan
 `kubeadm upgrade apply v1.15.1`
 yum install -y kubelet-1.15.1-0 kubectl-1.15.1-0 --disableexcludes=kubernetes
-systemctl daemon-reload
-systemctl restart kubelet
+yum install -y kubelet-1.16.1-0 kubectl-1.16.1-0 --disableexcludes=kubernetes
+
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
 
 yum install -y kubelet-1.15.1-0 --disableexcludes=kubernetes
+
 yum install -y kubeadm-1.15.1-0 --disableexcludes=kubernetes
 yum install -y kubectl-1.15.1-0 --disableexcludes=kubernetes
+
+sudo yum install -y kubeadm-1.16.1-0 kubelet-1.16.1-0 --disableexcludes=kubernetes
+sudo yum install -y kubectl-1.16.1-0 --disableexcludes=kubernetes
 
 kubeadm upgrade node 
 
@@ -122,17 +140,20 @@ unset https_proxy
 kubeadm upgrade apply v1.15.1
 yum install -y kubelet-1.15.1-0 kubectl-1.15.1-0 --disableexcludes=kubernetes
 yum install -y kubelet-1.16.1-0 kubectl-1.16.1-0 --disableexcludes=kubernetes
-systemctl daemon-reload
-systemctl daemon-reload
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+
 
 ### 升级worker节点
 
 yum install -y kubeadm-1.15.1-0 --disableexcludes=kubernetes
 yum install -y kubelet-1.15.1-0  --disableexcludes=kubernetes
 
-## 自建CRD
+## kubeadm 从私有仓库拉取镜像
 
-https://www.servicemesher.com/blog/kubernetes-crd-quick-start/
+我们可以在kubeadm执行命令的时候指定配置文件，配置文件中去指定的仓库拉取镜像，这样就避免了去拉取谷歌镜像
+
+`kubeadm config images list`
 
 ## 自建CRD
 
