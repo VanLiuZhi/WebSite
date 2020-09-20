@@ -1,5 +1,5 @@
 ---
-weight: 1000
+weight: 10000
 title: "Algorithm 算法学习"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -7,12 +7,12 @@ draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "Algorithm 算法学习"
-resources:
-- name: "base-image"
-  src: "/images/base-image.jpg"
+# resources:
+# - name: "base-image"
+#   src: "/images/base-image.jpg"
 
-tags: [Algorithm, Note]
-categories: [Algorithm算法]
+tags: [algorithm, note]
+categories: [Clear-Mind]
 
 lightgallery: true
 
@@ -20,7 +20,7 @@ toc:
   auto: false
 ---
 
-算法相关，对于非科班出身的人来说，只能慢慢学习和体会了
+算法相关
 
 <!-- more -->
 

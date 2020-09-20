@@ -108,7 +108,7 @@ yum install -y kubelet-1.15.1-0 kubectl-1.15.1-0 --disableexcludes=kubernetes
 systemctl daemon-reload
 systemctl restart kubelet
 
-yum install -y kubelet-1.15.1-0  --disableexcludes=kubernetes
+yum install -y kubelet-1.15.1-0 --disableexcludes=kubernetes
 yum install -y kubeadm-1.15.1-0 --disableexcludes=kubernetes
 yum install -y kubectl-1.15.1-0 --disableexcludes=kubernetes
 
@@ -121,6 +121,7 @@ unset https_proxy
 
 kubeadm upgrade apply v1.15.1
 yum install -y kubelet-1.15.1-0 kubectl-1.15.1-0 --disableexcludes=kubernetes
+yum install -y kubelet-1.16.1-0 kubectl-1.16.1-0 --disableexcludes=kubernetes
 systemctl daemon-reload
 systemctl daemon-reload
 
@@ -162,5 +163,20 @@ http://dockone.io/article/8721
 
 百度 kubernetes 高可用集群
 
+## 集群备份和恢复
+
+https://cloud.tencent.com/developer/article/1653649?from=10680
+
+https://cloud.tencent.com/developer/article/1638818?from=10680
+
+## 出现问题
+
+没有这个文件
+
+open /run/flannel/subnet.env: no such file or directory
+
+## 问题参考
+
+https://blog.csdn.net/reachyu/article/details/105263983
 
 

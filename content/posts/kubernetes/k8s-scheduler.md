@@ -334,9 +334,9 @@ kubectl describe node [node name]
 kubectl taint node [node name] key1:NoSchedule-
 ```
 
-设置：`kubectl taint node k8s-master2 node-role.kubernetes.io/master=:NoSchedule`
+设置：`kubectl taint node k8s-master1 node-role.kubernetes.io/master=:NoSchedule`
 
-删除: `kubectl taint node k8s-master2 node-role.kubernetes.io/master:NoSchedule-`
+删除: `kubectl taint node k8s-worker03 node-role.kubernetes.io/master:NoSchedule-`
 
 当我们把某个节点设置NoExecute，上面的常规pod会被驱逐掉(生命周期会经历一个删除的过程，最后pod删除，不是Evicted状态)，在其它节点被重新调度
 
@@ -438,5 +438,9 @@ ibm-app-cluster-critical	IBM	900000000	选择在创建集群时部署到 ibm-sys
 
 `kubectl get priorityclasses`
 `kubectl get priorityclass <priority_class> -o yaml > Downloads/priorityclass.yaml`
+
+## 参考
+
+https://blog.csdn.net/xopqaaa/article/details/103200845
 
 
