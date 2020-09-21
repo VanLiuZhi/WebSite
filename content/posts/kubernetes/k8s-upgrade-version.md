@@ -15,7 +15,7 @@ featuredImage: "/images/Kubernetes/k8s-upgrade.jpg"
 #   src: "images/base-image.jpg"
 
 tags: [cloud-native, k8s]
-categories: [Kubernetes] 
+categories: [Kubernetes]
 
 lightgallery: true
 
@@ -219,3 +219,85 @@ https://www.cnblogs.com/Christine-ting/p/12837250.html
 https://kubernetes.io/zh/docs/reference/setup-tools/kubeadm/kubeadm-init/
 
 
+```
+apiVersion: v1
+data:
+  ClusterConfiguration: |
+    apiServer:
+      extraArgs:
+        authorization-mode: Node,RBAC
+      timeoutForControlPlane: 4m0s
+    apiVersion: kubeadm.k8s.io/v1beta2
+    certificatesDir: /etc/kubernetes/pki
+    clusterName: kubernetes
+    controllerManager: {}
+    dns:
+      type: CoreDNS
+    etcd:
+      local:
+        dataDir: /var/lib/etcd
+    imageRepository: registry.aliyuncs.com/google_containers
+    kind: ClusterConfiguration
+    kubernetesVersion: v1.16.1
+    networking:
+      dnsDomain: cluster.local
+      podSubnet: 10.244.0.0/16
+      serviceSubnet: 10.1.0.0/16
+    scheduler: {}
+  ClusterStatus: |
+    apiEndpoints:
+      cluster1:
+        advertiseAddress: 192.168.59.101
+        bindPort: 6443
+    apiVersion: kubeadm.k8s.io/v1beta2
+    kind: ClusterStatus
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2019-09-23T15:50:48Z"
+  name: kubeadm-config
+  namespace: kube-system
+  resourceVersion: "226113"
+  selfLink: /api/v1/namespaces/kube-system/configmaps/kubeadm-config
+  uid: e978ab9b-de19-11e9-b73b-525400261060
+```
+
+```
+apiVersion: kubeadm.k8s.io/v1beta2
+bootstrapTokens:
+- groups:
+  - system:bootstrappers:kubeadm:default-node-token
+  token: abcdef.0123456789abcdef
+  ttl: 24h0m0s
+  usages:
+  - signing
+  - authentication
+kind: InitConfiguration
+localAPIEndpoint:
+  advertiseAddress: 1.2.3.4
+  bindPort: 6443
+nodeRegistration:
+  criSocket: /var/run/dockershim.sock
+  name: cluster1
+  taints:
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/master
+---
+apiServer:
+  timeoutForControlPlane: 4m0s
+apiVersion: kubeadm.k8s.io/v1beta2
+certificatesDir: /etc/kubernetes/pki
+clusterName: kubernetes
+controllerManager: {}
+dns:
+  type: CoreDNS
+etcd:
+  local:
+    dataDir: /var/lib/etcd
+imageRepository: k8s.gcr.io
+kind: ClusterConfiguration
+kubernetesVersion: v1.16.0
+networking:
+  dnsDomain: cluster.local
+  serviceSubnet: 10.96.0.0/12
+scheduler: {}
+```
