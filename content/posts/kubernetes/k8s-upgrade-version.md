@@ -200,4 +200,22 @@ open /run/flannel/subnet.env: no such file or directory
 
 https://blog.csdn.net/reachyu/article/details/105263983
 
+## 多master
+
+https://blog.csdn.net/double_happy111/article/details/105943912
+
+## calico 网络
+
+https://blog.csdn.net/lswzw/article/details/103044179
+
+https://www.kubernetes.org.cn/1165.html
+
+https://docs.projectcalico.org/getting-started/kubernetes/self-managed-onprem/onpremises
+
+https://www.cnblogs.com/Christine-ting/p/12837250.html
+
+## kubeadm 
+
+https://kubernetes.io/zh/docs/reference/setup-tools/kubeadm/kubeadm-init/
+
 

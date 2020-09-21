@@ -334,7 +334,7 @@ kubectl describe node [node name]
 kubectl taint node [node name] key1:NoSchedule-
 ```
 
-设置：`kubectl taint node k8s-master1 node-role.kubernetes.io/master=:NoSchedule`
+设置：`kubectl taint node k8s-worker05 node-role.kubernetes.io/master=:NoSchedule`
 
 删除: `kubectl taint node k8s-worker03 node-role.kubernetes.io/master:NoSchedule-`
 
