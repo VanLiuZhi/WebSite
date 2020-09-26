@@ -37,6 +37,20 @@ toc:
 
 4. 数据持久化，配置调整
 
+## 相关组件
+
+1. Prometheus Server: 
+用于收集和存储时间序列数据。
+2. Client Library: 
+客户端库，为需要监控的服务生成相应的 metrics 并暴露给 Prometheus server。当 Prometheus server 来 pull 时，直接返回实时状态的 metrics。
+3. Push Gateway: 
+主要用于短期的 jobs。由于这类 jobs 存在时间较短，可能在 Prometheus 来 pull 之前就消失了。为此，这次 jobs 可以直接向 Prometheus server 端推送它们的 metrics。这种方式主要用于服务层面的 metrics，对于机器层面的 metrices，需要使用 node exporter。
+4. Exporters: 
+用于暴露已有的第三方服务的 metrics 给 Prometheus。
+5. Alertmanager: 
+从 Prometheus server 端接收到 alerts 后，会进行去除重复数据，分组，并路由到对收的接受方式，发出报警。常见的接收方式有：电子邮件，pagerduty，OpsGenie, webhook 等。
+
+
 ## 关于kube-prometheus
 
 prometheus是非常流行的监控服务，但是对于k8s的监控需要做很多接口，这导致了prometheus监控K8s比较复杂，官方就出了`kube-prometheus`这么一个项目，是`Prometheus Operator`的定制版，如果我们想获取完整的k8s服务监控指标，推荐采用kube-prometheus的方式
@@ -551,6 +565,43 @@ KubeNodeUnreachable 节点不可达
 KubeletDown Kubelet 服务宕机
 KubeSchedulerDown 调度服务宕机
 
+## 其它
+
+docker run -d -p 9090:9090 \
+            -v $PWD/prometheus.yml:/etc/prometheus/prometheus.yml \
+            -v $PWD/alert.rules:/etc/prometheus/alert.rules \
+            --name prometheus \
+            prom/prometheus \
+            -config.file=/etc/prometheus/prometheus.yml \
+            -alertmanager.url=http://0.0.0.0:9093
+
+### grafana
+
+监控模板使用315
+
+### Prometheus 查询语句
+
+数据类型: Counter（计数器）、Gauge（仪表盘）、Histogram（直方图）、Summary（摘要）
+
+时间范围
+
+s - 秒
+m - 分钟
+h - 小时
+d - 天
+w - 周
+y - 年
+
+内置函数
+
+`5分钟内的增长率` rate(http_requests_total[5m])
+`top10` topk(10, http_requests_total)
+
+### 关于Federation
+
+Federation允许一个Prometheus从另一个Prometheus中拉取某些指定的时序数据。Federation是Prometheus提供的扩展机制，允许Prometheus从一个节点扩展到多个节点，实际使用中一般会扩展成树状的层级结构
+
+比如基础服务的Prometheus才是做数据存储的，把k8s的Prometheus的数据通过Federation拉取到外部来
 
 ## 总结
 

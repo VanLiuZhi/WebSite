@@ -108,7 +108,7 @@ sudo docker save k8s.gcr.io/kube-controller-manager:v1.15.1 > kube-controller-ma
 
 `yum install kubeadm-1.15.1-0 --disableexcludes=kubernetes`
 
-yum install kubeadm-1.16.1-0 --disableexcludes=kubernetes
+yum install kubeadm-1.18.0-0 --disableexcludes=kubernetes
 
 查看是否升级成功
 
@@ -116,7 +116,7 @@ yum install kubeadm-1.16.1-0 --disableexcludes=kubernetes
 
 kubeadm upgrade plan
 `kubeadm upgrade apply v1.15.1`
-yum install -y kubelet-1.15.1-0 kubectl-1.15.1-0 --disableexcludes=kubernetes
+yum install -y kubelet-1.18.0-0 kubectl-1.18.0-0 --disableexcludes=kubernetes
 yum install -y kubelet-1.16.1-0 kubectl-1.16.1-0 --disableexcludes=kubernetes
 
 sudo systemctl daemon-reload
@@ -200,6 +200,8 @@ open /run/flannel/subnet.env: no such file or directory
 
 https://blog.csdn.net/reachyu/article/details/105263983
 
+https://cloud.tencent.com/developer/article/1680083
+
 ## 多master
 
 https://blog.csdn.net/double_happy111/article/details/105943912
@@ -214,10 +216,13 @@ https://docs.projectcalico.org/getting-started/kubernetes/self-managed-onprem/on
 
 https://www.cnblogs.com/Christine-ting/p/12837250.html
 
+## k8smeetup
+
+http://www.k8smeetup.com/
+
 ## kubeadm 
 
 https://kubernetes.io/zh/docs/reference/setup-tools/kubeadm/kubeadm-init/
-
 
 ```
 apiVersion: v1
@@ -301,3 +306,17 @@ networking:
   serviceSubnet: 10.96.0.0/12
 scheduler: {}
 ```
+kubeadm reset
+kubeadm init --kubernetes-version=1.16.1 --apiserver-advertise-address=10.90.16.112 --pod-network-cidr=3.25.0.0/16
+
+rm -rf /var/lib/calico
+rm -rf /etc/cni/net.d
+systemctl restart kubelet
+
+kubeadm init --kubernetes-version=1.18.0 --image-repository registry.aliyuncs.com/google_containers --apiserver-advertise-address=10.90.16.112 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.10.0.0/16
+
+kubeadm init --kubernetes-version=1.18.0  
+ --apiserver-advertise-address=192.168.56.101   
+ --image-repository registry.aliyuncs.com/google_containers  
+ --service-cidr=10.10.0.0/16 --pod-network-cidr=192.168.0.0/16
+

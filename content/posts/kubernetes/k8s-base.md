@@ -432,6 +432,25 @@ kubelet 会尝试通过 Kubernetes API 服务器为每个静态 Pod 自动创建
 
 kubectl -n eos-bpm get pods | grep Evicted |awk '{print$1}'|xargs kubectl -n eos-bpm delete pods
 
+## Kubernetes Resource QoS Classes
+
+QoS 是容器资源配置的一个分类，驱逐策略将根据不同的分类来决定先驱逐谁
+
+Guaranteed：每个容器都必须设置CPU和内存的限制和请求（最大和最小）
+Burstable：在不满足Guaranteed的情况下，至少设置一个CPU或者内存的请求
+BestEffort：什么都不设置，可用使用到系统的最大资源
+
+最小被驱逐的就是BestEffort类型
+
+## 关于 request 和 limit
+
+必须要满足这个条件
+
+0 <= request <= limit
+
+limit 0 就是资源没有限制，理解request是容器启动的最小资源，为0就是没有资源也可用启动，当然没有资源是起不来的
+request只是保证被调度的时候，工作节点需要有这么多的资源。而limit会限制能使用的最大资源
+
 ## 查看所有pod
 
 kubectl get pods --all-namespaces
@@ -491,3 +510,24 @@ pod网络的IP地址，是每个POD分配的虚拟IP，可以使用 `kubectl get
 3. CLUSTER-IP
 
 它是Service的地址,是一个虚拟地址（无法ping），是使用kubectl create时，--port 所指定的端口绑定的IP,各Service中的pod都可以使用CLUSTER-IP:port的方式相互访问（当然更应该使用ServiceName:port的方式）可以使用`kubectl get svc -o wide`进行查看
+
+## 操作工作负载的方式
+
+rolling-update 版本操作
+
+patch方式，patch不会去重建Pod，Pod的IP可以保持。kubectl patch -f node.json -p '{"spec":{"unschedulable":true}}'
+
+create 会从完整的yaml文件操作，先删除资源对象再次创建
+
+apply 只会更新yaml文件中声明的部分，所以apply操作的yaml文件可用不完整，但是create要求完整
+
+## kubectl proxy 让外部网络访问K8S
+
+基本使用
+kubectl proxy --port=8009 
+
+开放地址
+kubectl proxy --address=0.0.0.0  --port=8009
+
+授权其它主机(相当于其它服务都能随意服务，可用限制accept的范围)
+kubectl proxy --address='0.0.0.0'  --accept-hosts='^*$' --port=8009

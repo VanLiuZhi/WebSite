@@ -439,6 +439,12 @@ ibm-app-cluster-critical	IBM	900000000	选择在创建集群时部署到 ibm-sys
 `kubectl get priorityclasses`
 `kubectl get priorityclass <priority_class> -o yaml > Downloads/priorityclass.yaml`
 
+## 资源配置与预留
+
+https://www.jianshu.com/p/5dcf04e8d56b
+
+https://www.cnblogs.com/dudu/p/12587234.html
+
 ## 参考
 
 https://blog.csdn.net/xopqaaa/article/details/103200845

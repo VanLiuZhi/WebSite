@@ -795,7 +795,7 @@ PUT /_cluster/settings
 
 配置文件修改后重启，写入线程大小修改： thread_pool.write.queue_size: 1000
 
-### 修改默认放回值条目
+### 修改默认返回值条目
 
 index.max_result_window: 1000000  默认只能返回10000，可能调用链太长需要修改这个配置(skywalking)
 

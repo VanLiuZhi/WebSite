@@ -631,3 +631,23 @@ history list
 `yum history info 15` 可以查看这个版本的一些操作记录和依赖
 `yum history undo 15` 回滚，假如kubeadm被升级到了一个很高的版本，通过回退发现已经回退到原来的旧版本了
 
+## 内存相关名称VSS,RSS,PSS,USS
+
+一般情况下有：VSS >= RSS >= PSS >= USS
+
+RSS是Resident Set Size（常驻内存大小）
+VSZ是Virtual Memory Size（虚拟内存大小）
+
+## dd命令创建大文件
+
+`dd if=/dev/zero of=test bs=1M count=1000`
+
+在当前目录下会生成一个1000M的test文件，文件内容为全0（因从/dev/zero中读取，/dev/zero为0源），但是这样为实际写入硬盘，文件产生速度取决于硬盘读写速度，如果欲产生超大文件，速度很慢。在某种场景下，我们只想让文件系统认为存在一个超大文件在此，但是并不实际写入硬盘
+
+`dd if=/dev/zero of=test bs=1M count=0 seek=100000`   
+
+此时创建的文件在文件系统中的显示大小为100000MB，但是并不实际占用block，因此创建速度与内存速度相当，seek的作用是跳过输出文件中指定大小的部分，这就达到了创建大文件，但是并不实际写入的目的。当然，因为不实际写入硬盘，所以你在容量只有10G的硬盘上创建100G的此类文件都是可以的
+
+## 故障模拟
+
+https://blog.csdn.net/heavenmark/article/details/82805260
