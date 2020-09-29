@@ -531,3 +531,22 @@ kubectl proxy --address=0.0.0.0  --port=8009
 
 授权其它主机(相当于其它服务都能随意服务，可用限制accept的范围)
 kubectl proxy --address='0.0.0.0'  --accept-hosts='^*$' --port=8009
+
+## kubelet 配置
+
+https://v1-18.docs.kubernetes.io/zh/docs/tasks/administer-cluster/kubelet-config-file/
+
+## Headless Service
+
+通过service访问pod
+
+1. 以Service的VIP(Virtual IP,即:虚拟IP)方式.比如:当我访问192.168.0.1这个Service的IP地址时,它就是一个VIP.在实际中,它会把请求转发到Service代理的具体Pod上.
+
+2. 以Service的DNS方式.在这里又分为两种处理方法:
+
+第一种是Normal Service.这种情况下,当访问DNS记录时,解析到的是Service的VIP.
+
+第二种是Headless Service.这种情况下,访问DNS记录时,解析到的就是某一个Pod的IP地址.
+
+可以看到,Headless Service不需要分配一个VIP,而是可以直接以DNS记录的方式解析出被代理Pod的IP地址.这样设计有什么好处呢?
+这样设计可以使Kubernetes项目为Pod分配唯一"可解析身份".而有了这个身份之后,只要知道了一个Pod的名字以及它对应的Service的名字,就可以非常确定地通过这条DNS记录访问到Pod的IP地址.

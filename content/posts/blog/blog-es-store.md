@@ -519,6 +519,63 @@ discovery.zen.fd.ping_timeout: 200s
 discovery.zen.fd.ping.interval: 30s
 discovery.zen.fd.ping.retries: 6
 
+## 断路器
+
+indices.breaker.fielddata.limit
+fielddata 断路器默认设置堆的 60% 作为 fielddata 大小的上限。
+
+indices.breaker.request.limit
+request 断路器估算需要完成其他请求部分的结构大小，例如创建一个聚合桶，默认限制是堆内存的 40%。
+
+indices.breaker.total.limit
+total 揉合 request 和 fielddata 断路器保证两者组合起来不会使用超过堆内存的 70%。
+
+indices.fielddata.cache.size
+缓存回收大小，无默认值， 有了这个设置，最久未使用（LRU）的 fielddata 会被回收为新数据腾出空间
+
+前三项可以动态设置,最后一项要在配置文件中修改
+
+```json
+PUT /_cluster/settings
+{
+  "persistent": {
+    "indices.breaker.fielddata.limit": "60%"
+  }
+} 
 
 
+PUT /_cluster/settings
+{
+  "persistent": {
+    "indices.breaker.request.limit": "40%"
+  }
+} 
 
+
+PUT /_cluster/settings
+{
+  "persistent": {
+    "indices.breaker.total.limit": "70%"
+  }
+} 
+```
+
+```
+#------------有了这个设置，最久未使用（LRU）的 fielddata 会被回收为新数据腾出空间   
+indices.fielddata.cache.size:  40%
+```
+
+建议
+
+最好为断路器设置一个相对保守点的值。 记住 fielddata 需要与 request 断路器共享堆内存、索引缓冲内存和过滤器缓存。Lucene 的数据被用来构造索引，以及各种其他临时的数据结构。 正因如此，它默认值非常保守，只有 60% 。过于乐观的设置可能会引起潜在的堆栈溢出（OOM）异常，这会使整个节点宕掉。
+另一方面，过度保守的值只会返回查询异常，应用程序可以对异常做相应处理。异常比服务器崩溃要好。
+
+```
+当前fieldData缓存区大小     <   indices.fielddata.cache.size 
+当前fieldData缓存区大小   +  下一个查询加载进来的fieldData   <   indices.breaker.fielddata.limit 
+indices.breaker.request.limit  +  indices.breaker.fielddata.limit  <  indices.breaker.total.limit
+```
+
+官方参考
+
+https://www.elastic.co/guide/cn/elasticsearch/guide/current/_limiting_memory_usage.html

@@ -436,6 +436,19 @@ spring提供的bean拷贝工具 BeanUtils.copyProperties(源对象，目标对�
 @NotBlank://String 不是 null 且去除两端空白字符后的长度（trimmed length）大于 0，也就是传 “” 会报错
 ```
 
+18. @EnableConfigurationProperties 和 @ConfigurationProperties
+
+使用ConfigurationProperties后，要使用Compoent注解，这样配置属性就被spring托管了。如果不用Compoent注解，那就要在需要使用到的地方，要使用EnableConfigurationProperties注解
+注意EnableConfigurationProperties注解使用后，对象的使用
+
+1. 没有使用Compoent注解，ConfigurationProperties装配的对象要在EnableConfigurationProperties中使用。只能通过构造器注入
+
+2. 在1的基础上，装配对象在其它类中使用，可用直接通过Autowired注入
+
+3. 在1的基础上，但是使用了Compoent注解，那么在哪里都可用Autowired注入
+
+
+
 ## 关于属性的含义与idea
 
 可以点击进去查看源码注释

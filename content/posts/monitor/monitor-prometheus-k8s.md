@@ -399,6 +399,11 @@ Kube-Prometheus数据持久时间，通过`retention`参数来实现
 
 其它配置参考：https://github.com/coreos/prometheus-operator/blob/0e6ed120261f101e6f0dc9581de025f136508ada/Documentation/prometheus.md
 
+{{< admonition warning >}}
+当我们使用nfs为集群提供共享存储的时候，要先创建pv，pvc。然后再创建pod否则报错
+并且此时要求共享存储的目录必须存在，如果不存在k8s会因为无法挂载目录导致pod无法启动
+{{< /admonition >}}
+
 ### grafana 
 
 grafana就比较简单了，定义pv和pvc

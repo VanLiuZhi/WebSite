@@ -220,9 +220,19 @@ https://www.cnblogs.com/Christine-ting/p/12837250.html
 
 http://www.k8smeetup.com/
 
+## 博客
+
+https://blog.gmem.cc/category/work
+
 ## kubeadm 
 
 https://kubernetes.io/zh/docs/reference/setup-tools/kubeadm/kubeadm-init/
+
+## 更新证书
+
+https://platformengineer.com/fix-kubernetes-bootstrap-client-certificate-expired-error/
+
+高版本可用直接使用 kubeadm alpha certs renew all 更新，具体命令查看文档
 
 ```
 apiVersion: v1

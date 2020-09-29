@@ -410,6 +410,8 @@ WebSecurityConfigurerAdapter
 
 protected void configure(HttpSecurity http)
 
+Spring Security 中的配置优先级高于资源服务器中的配置，即请求地址先经过 Spring Security 的 HttpSecurity，再经过资源服务器的 HttpSecurity
+
 ### refresh_token
 
 刷新模式，就是获取令牌的接口如果支持刷新模式，那么直接使用refresh_token就可以获取到令牌，该模式就不需要前面的繁琐流程，直接获取到令牌token，前提是你要有refresh_token，并且它没过期

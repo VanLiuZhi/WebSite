@@ -8,8 +8,8 @@ draft: true
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "{{ replace .Name "-" " " | title }}"
-featuredImagePreview: "images/base-image.jpg"
-featuredImage: "/images/base-image.jpg"
+# featuredImagePreview: "images/base-image.jpg"
+# featuredImage: "/images/base-image.jpg"
 # resources:
 # - name: "featured-image"
 #   src: "images/base-image.jpg"
