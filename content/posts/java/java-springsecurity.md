@@ -451,10 +451,49 @@ refresh_token一般是获取access token的时候返回的
 </dependency>
 ```
 
+## Security Oauth2知识点总结
 
+1. 报错Access is denied
 
+```json
+{
+    "error": "access_denied",
+    "error_description": "Access is denied"
+}
+```
 
+这通常是token校验通过了，但是你没有访问权限，所以被拒绝了(比如当前角色不允许访问这个资源)
 
+2. 不要轻易调用父类方法
+
+Security Oauth2的集成中，有很多方法需要我们重写，IDEA快捷键创建的方法默认会调用父类的方法
+有很多配置是不能调用父类方法的，比如`super.configure(HttpSecurity http)`，这也是非常容易出错的地方，因为父类方法是全部拦截的
+
+3. 基于内存和基于Redis的普通token存储
+
+资源服务器也是需要拿着token去授权服务器校验的(JWT就不需要了，资源服务器可以自己校验)，如果是基于内存的，服务重启就失效了，基于Redis自然就不会(服务怎么重启只要不失效都可以去Redis中获取)
+
+但是基于Redis的，需要资源服务器配置token的store为去Redis读取。很多Hello World教程都不告诉你这个的
+
+```java
+@Override
+public void configure(ResourceServerSecurityConfigurer resources) {
+    // 配置资源id，这里的资源id和授权服务器中的资源id一致
+    resources.resourceId("myResource")
+            // 设置这些资源仅基于令牌认证
+            .stateless(true);
+    // 配置去Redis获取token，才能和传入的token做验证
+    resources.tokenStore(new RedisTokenStore(redisConnectionFactory));
+}
+```
+
+## 参考
+
+https://blog.csdn.net/u012702547/article/details/107530246
+
+http://blog.didispace.com/spring-security-oauth2-xjf-3/
+
+https://blog.csdn.net/andy_zhang2007/article/details/90023901
 
 
 
