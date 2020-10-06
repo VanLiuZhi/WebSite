@@ -1,5 +1,5 @@
 ---
-weight: 1000
+weight: 8800
 title: "nvm 环境管理工具"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -12,7 +12,7 @@ resources:
   src: "/images/base-image.jpg"
 
 tags: [Node.js, Note]
-categories: [Node.js]
+categories: [FrontEnd(前端)]
 
 lightgallery: true
 
