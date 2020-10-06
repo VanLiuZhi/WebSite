@@ -1,5 +1,5 @@
 ---
-weight: 1000
+weight: 7700
 title: "linux-base 基础概念"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -12,7 +12,7 @@ resources:
   src: "/images/base-image.jpg"
 
 tags: [Linux, Note]
-categories: [操作系统]
+categories: [Linux]
 
 lightgallery: true
 

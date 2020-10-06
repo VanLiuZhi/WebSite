@@ -8,13 +8,11 @@ draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "K8s Scheduler"
-# featuredImagePreview: "/images/Kubernetes/k8s-scheduler.jpg"
-# featuredImage: "/images/Kubernetes/k8s-scheduler.jpg"
-# resources:
-# - name: "featured-image"
-#   src: "images/base-image.jpg"
+resources:
+- name: "base-image"
+  src: "/images/base-image.jpg"
 
-tags: [cloud-native, k8s]
+tags: [Cloud-Native, K8s]
 categories: [Kubernetes] 
 
 lightgallery: true

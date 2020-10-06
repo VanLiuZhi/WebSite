@@ -15,7 +15,7 @@ Python 5500
 
 Clear-Mind 6600
 
-Linux与运维 7700
+Linux 7700
 
 FrontEnd(前端) 8800
 

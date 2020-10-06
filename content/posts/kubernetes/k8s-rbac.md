@@ -1,5 +1,5 @@
 ---
-weight: 1
+weight: 1103
 title: "K8s Rbac"
 subtitle: "K8s Rbac"
 date: 2020-09-24T09:57:54+08:00
@@ -8,14 +8,12 @@ draft: true
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "K8s Rbac"
-featuredImagePreview: "images/base-image.jpg"
-featuredImage: "/images/base-image.jpg"
-# resources:
-# - name: "featured-image"
-#   src: "images/base-image.jpg"
+resources:
+- name: "base-image"
+  src: "/images/base-image.jpg"
 
-tags: 
-categories: 
+tags: [Cloud-Native, K8s]
+categories: [Kubernetes] 
 
 lightgallery: true
 

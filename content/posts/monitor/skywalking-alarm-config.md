@@ -1,5 +1,5 @@
 ---
-weight: 1
+weight: 3300
 title: "Skywalking 告警配置与 Naco 集成实践"
 subtitle: "Skywalking Alarm Config"
 date: 2020-09-04T14:41:38+08:00
@@ -8,11 +8,9 @@ draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "Skywalking Alarm Config"
-# featuredImagePreview: "images/base-image.jpg"
-# featuredImage: "/images/base-image.jpg"
 resources:
-- name: "featured-image"
-  src: "images/base-image.jpg"
+- name: "base-image"
+  src: "/images/base-image.jpg"
 
 tags: [Note]
 categories: [Cloud-Native]

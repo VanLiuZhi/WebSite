@@ -1,5 +1,5 @@
 ---
-weight: 1
+weight: 3300
 title: "Sw Deploy"
 subtitle: "Sw Deploy"
 date: 2020-09-24T16:27:55+08:00
@@ -8,14 +8,12 @@ draft: true
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "Sw Deploy"
-featuredImagePreview: "images/base-image.jpg"
-featuredImage: "/images/base-image.jpg"
-# resources:
-# - name: "featured-image"
-#   src: "images/base-image.jpg"
+resources:
+- name: "base-image"
+  src: "/images/base-image.jpg"
 
-tags: 
-categories: 
+tags: [Linux, Docker, Note, Cloud]
+categories: [Cloud-Native]
 
 lightgallery: true
 

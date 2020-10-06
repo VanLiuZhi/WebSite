@@ -1,5 +1,5 @@
 ---
-weight: 1000
+weight: 3300
 title: "kube-prometheus 监控 kubernets 总结"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00

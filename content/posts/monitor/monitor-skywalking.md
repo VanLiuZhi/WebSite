@@ -1,5 +1,5 @@
 ---
-weight: 3
+weight: 3300
 title: "分布式链路追踪系统-skywalking的运用"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -9,7 +9,7 @@ authorLink: "https://www.liuzhidream.com"
 description: "分布式链路追踪系统-skywalking的运用"
 resources:
 - name: "base-image"
-  src: "base-image.jpg"
+  src: "/images/base-image.jpg"
 
 tags: [Linux, Docker, Note, Cloud]
 categories: [Cloud-Native]

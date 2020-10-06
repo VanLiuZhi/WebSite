@@ -7,13 +7,11 @@ draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "Kubernetes 笔记"
-featuredImagePreview: "/images/Kubernetes/k8s-base.png"
-featuredImage: "/images/Kubernetes/k8s-base.png"
-# resources:
-# - name: "featured-image"
-#   src: "images/base-image.jpg"
+resources:
+- name: "base-image"
+  src: "/images/base-image.jpg"
 
-tags: [cloud-native, k8s]
+tags: [Cloud-Native, K8s]
 categories: [Kubernetes] 
 
 lightgallery: true

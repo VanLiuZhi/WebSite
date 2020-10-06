@@ -1,5 +1,5 @@
 ---
-weight: 1000
+weight: 5500
 title: "Locust测试工具"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -12,7 +12,7 @@ resources:
   src: "/images/base-image.jpg"
 
 tags: [Python, Web]
-categories: [Web开发]
+categories: [Python]
 
 lightgallery: true
 
