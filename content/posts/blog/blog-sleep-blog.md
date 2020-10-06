@@ -1,5 +1,5 @@
 ---
-weight: 1000
+weight: 6600
 title: "为什么那么多成功的人，他们每天只睡几个小时？"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -12,7 +12,7 @@ resources:
   src: "/images/base-image.jpg"
 
 tags: [Causerie]
-categories: [Causerie]
+categories: [Clear-Mind]
 
 lightgallery: true
 

@@ -1,5 +1,5 @@
 ---
-weight: 1000
+weight: 1199
 title: "使用阿里云容器镜像服务"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -12,7 +12,7 @@ resources:
   src: "/images/base-image.jpg"
 
 tags: [Linux, Docker, Note]
-categories: [Web开发]
+categories: [Kubernetes]
 
 lightgallery: true
 

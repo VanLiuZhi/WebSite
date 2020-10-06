@@ -12,7 +12,7 @@ resources:
   src: "/images/base-image.jpg"
 
 tags: [Java, Note]
-categories: [Java]
+categories: [Java-MicroServices]
 
 lightgallery: true
 

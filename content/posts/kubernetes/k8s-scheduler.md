@@ -8,8 +8,8 @@ draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "K8s Scheduler"
-featuredImagePreview: "/images/Kubernetes/k8s-scheduler.jpg"
-featuredImage: "/images/Kubernetes/k8s-scheduler.jpg"
+# featuredImagePreview: "/images/Kubernetes/k8s-scheduler.jpg"
+# featuredImage: "/images/Kubernetes/k8s-scheduler.jpg"
 # resources:
 # - name: "featured-image"
 #   src: "images/base-image.jpg"

@@ -20,6 +20,7 @@ categories:
 lightgallery: true
 
 toc:
+  # 自动展开目录
   auto: false
 ---
 

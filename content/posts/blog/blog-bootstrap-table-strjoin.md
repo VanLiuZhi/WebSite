@@ -1,5 +1,5 @@
 ---
-weight: 1000
+weight: 8801
 title: "BootStrap Table 通过回调解决频繁拼接字符串带来的问题"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -12,7 +12,7 @@ resources:
   src: "/images/base-image.jpg"
 
 tags: [Technology, Web, JavaScript]
-categories: [Technology技术]
+categories: [FrontEnd(前端)]
 
 lightgallery: true
 

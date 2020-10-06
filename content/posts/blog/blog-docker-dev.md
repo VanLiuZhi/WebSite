@@ -1,5 +1,5 @@
 ---
-weight: 1000
+weight: 1199
 title: "利用Docker快速构建开发环境"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -12,7 +12,7 @@ resources:
   src: "/images/base-image.jpg"
 
 tags: [Docker, Linux, Technology]
-categories: [Technology技术]
+categories: [Kubernetes]
 
 lightgallery: true
 

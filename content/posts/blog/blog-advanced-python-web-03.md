@@ -1,5 +1,5 @@
 ---
-weight: 1000
+weight: 5503
 title: "python web 开发(三) 使用Docker部署项目"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -12,7 +12,7 @@ resources:
   src: "/images/base-image.jpg"
 
 tags: [Python, Web, Technology]
-categories: [Technology技术]
+categories: [Python]
 
 lightgallery: true
 

@@ -1,5 +1,5 @@
 ---
-weight: 10000
+weight: 6600
 title: "Algorithm 算法学习"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -11,7 +11,7 @@ description: "Algorithm 算法学习"
 # - name: "base-image"
 #   src: "/images/base-image.jpg"
 
-tags: [algorithm, note]
+tags: [Algorithm, Note]
 categories: [Clear-Mind]
 
 lightgallery: true

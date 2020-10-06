@@ -1,5 +1,5 @@
 ---
-weight: 1000
+weight: 5500
 title: "python 2/3 str unicode bytes 区别详解"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -12,7 +12,7 @@ resources:
   src: "/images/base-image.jpg"
 
 tags: [Python, Web, Technology]
-categories: [Technology技术]
+categories: [Python]
 
 lightgallery: true
 

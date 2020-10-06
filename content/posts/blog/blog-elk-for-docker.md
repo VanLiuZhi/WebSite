@@ -1,5 +1,5 @@
 ---
-weight: 1000
+weight: 9900
 title: "ELK实践与运用总结"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -12,7 +12,7 @@ resources:
   src: "/images/base-image.jpg"
 
 tags: [Technology, Docker, Note]
-categories: [Technology技术]
+categories: [Middleware(中间件)]
 
 lightgallery: true
 
