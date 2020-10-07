@@ -1,5 +1,5 @@
 ---
-weight: 1000
+weight: 5500
 title: "python常用方法"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -12,7 +12,7 @@ resources:
   src: "/images/base-image.jpg"
 
 tags: [Python, Note]
-categories: [Python编程]
+categories: [Python]
 
 lightgallery: true
 

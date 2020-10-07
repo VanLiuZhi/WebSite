@@ -313,7 +313,7 @@ kubectl describe node node1
 
 kubectl taint node node1 key1:NoSchedule-  # 这里的key可以不用指定value
 kubectl taint node node1 key1:NoExecute-
-# kubectl taint node node1 key1-  删除指定key所有的effect
+kubectl taint node node1 key1-  删除指定key所有的effect
 kubectl taint node node1 key2:NoSchedule-
 
 master节点设置

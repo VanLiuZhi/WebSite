@@ -1,5 +1,5 @@
 ---
-weight: 1000
+weight: 6600
 title: "svn 版本控制工具"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -12,7 +12,7 @@ resources:
   src: "/images/base-image.jpg"
 
 tags: [Web, Note, Svn]
-categories: [操作系统]
+categories: [Clear-Mind]
 
 lightgallery: true
 

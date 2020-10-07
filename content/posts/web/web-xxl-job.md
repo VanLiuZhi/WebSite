@@ -1,5 +1,5 @@
 ---
-weight: 1
+weight: 9900
 title: "Web Xxl Job"
 subtitle: "Web Xxl Job"
 date: 2020-09-21T10:39:41+08:00
@@ -8,14 +8,12 @@ draft: true
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "Web Xxl Job"
-featuredImagePreview: "images/base-image.jpg"
-featuredImage: "/images/base-image.jpg"
-# resources:
-# - name: "featured-image"
-#   src: "images/base-image.jpg"
+resources:
+- name: "base-image"
+  src: "/images/base-image.jpg"
 
-tags: 
-categories: 
+tags: [Note]
+categories: [Middleware(中间件)]
 
 lightgallery: true
 

@@ -1,5 +1,5 @@
 ---
-weight: 1000
+weight: 9900
 title: "Celery 在 web 开发中的运用"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -12,7 +12,7 @@ resources:
   src: "/images/base-image.jpg"
 
 tags: [Python, Note]
-categories: [Middleware]
+categories: [Middleware(中间件)]
 
 lightgallery: true
 

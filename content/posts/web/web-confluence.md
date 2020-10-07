@@ -1,5 +1,5 @@
 ---
-weight: 1
+weight: 6600
 title: "Web Confluence"
 subtitle: "Web Confluence"
 date: 2020-09-21T10:41:18+08:00
@@ -8,14 +8,12 @@ draft: true
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "Web Confluence"
-featuredImagePreview: "images/base-image.jpg"
-featuredImage: "/images/base-image.jpg"
-# resources:
-# - name: "featured-image"
-#   src: "images/base-image.jpg"
+resources:
+- name: "base-image"
+  src: "/images/base-image.jpg"
 
-tags: 
-categories: 
+tags: [Note]
+categories: [Clear-Mind]
 
 lightgallery: true
 

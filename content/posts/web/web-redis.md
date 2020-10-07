@@ -1,5 +1,5 @@
 ---
-weight: 1000
+weight: 9900
 title: "Redis在web开发中的运用"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -12,7 +12,7 @@ resources:
   src: "/images/base-image.jpg"
 
 tags: [Web, Note, DataBase, Python]
-categories: [database]
+categories: [Middleware(中间件)]
 
 lightgallery: true
 

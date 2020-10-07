@@ -1,5 +1,5 @@
 ---
-weight: 1000
+weight: 6600
 title: "yaml 标记语言"
 date: 2020-08-16T14:00:00+08:00
 lastmod: 2020-08-16T14:00:00+08:00
@@ -12,7 +12,7 @@ resources:
   src: "/images/base-image.jpg"
 
 tags: [Yaml, Other]
-categories: [Other]
+categories: [Clear-Mind]
 
 lightgallery: true
 
