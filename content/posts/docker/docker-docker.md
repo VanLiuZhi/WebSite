@@ -7,9 +7,11 @@ draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "Docker 容器在 web 开发中的运用"
-resources:
-- name: "base-image"
-  src: "/images/base-image.jpg"
+featuredImagePreview: "images/docker/docker.png"
+# featuredImage: "/images/docker/docker.png"
+# resources:
+# - name: "base-image"
+#   src: "/images/base-image.jpg"
 
 tags: [Linux, Docker, Note]
 categories: [Kubernetes]
@@ -22,9 +24,9 @@ toc:
 
 docker 容器技术学习笔记
 
-docker是使用go语言开发的应用容器引擎，docker 的开发商是 Docker,Inc. 可以说现在还没对手（目前找不到可以代替的软件）。从各方面来说你都应该学习docker，对于开发你可以快速构建环境，运维同样如此。
+docker是使用go语言开发的应用容器引擎，docker 的开发商是 Docker,Inc。从各方面来说你都应该学习docker，对于开发你可以快速构建环境，运维同样如此
 
-<!-- more -->
+<!--more-->
 
 # Docker 笔记
 
