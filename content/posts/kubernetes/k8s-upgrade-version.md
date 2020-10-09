@@ -8,6 +8,8 @@ draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "K8s Upgrade Version"
+# featuredImagePreview: "images/Kubernetes/upgrade.jpg"
+# featuredImage: "/images/Kubernetes/upgrade.jpg"
 resources:
 - name: "base-image"
   src: "/images/base-image.jpg"

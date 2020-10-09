@@ -7,11 +7,11 @@ draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "Kubernetes(k8s) 安装过程"
-featuredImagePreview: "images/Kubernetes/install.png"
-featuredImage: "/images/Kubernetes/install.png"
-# resources:
-# - name: "base-image"
-#   src: "/images/base-image.jpg"
+# featuredImagePreview: "images/Kubernetes/install.png"
+# featuredImage: "/images/Kubernetes/install.png"
+resources:
+- name: "base-image"
+  src: "/images/base-image.jpg"
 
 tags: [Linux, Docker, Note]
 categories: [Kubernetes] 

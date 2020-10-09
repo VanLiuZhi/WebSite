@@ -7,11 +7,11 @@ draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "Docker 容器在 web 开发中的运用"
-featuredImagePreview: "images/docker/docker.png"
+# featuredImagePreview: "images/docker/docker.png"
 # featuredImage: "/images/docker/docker.png"
-# resources:
-# - name: "base-image"
-#   src: "/images/base-image.jpg"
+resources:
+- name: "base-image"
+  src: "/images/base-image.jpg"
 
 tags: [Linux, Docker, Note]
 categories: [Kubernetes]
