@@ -487,6 +487,11 @@ public void configure(ResourceServerSecurityConfigurer resources) {
 }
 ```
 
+4. jwt扩展
+
+TokenEnhancer，使用这种方式，是获取jwt的时候，会附加信息。附加信息不添加到载荷中()
+DefaultAccessTokenConverter，使用这种方式，是扩展jwt的载荷信息，资源服务器可以解析到载荷中附加的数据
+
 ## 参考
 
 https://blog.csdn.net/u012702547/article/details/107530246

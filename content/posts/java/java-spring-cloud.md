@@ -496,3 +496,9 @@ boot:
 
 Euerka Service和Euerka Client之间，默认30秒进行一次心跳，出现这个异常是因为client少于一定的阈值，server不会删除注册信息，这就有可能导致在调用微服务时，实际上服务并不存在。 这种保护状态实际上是考虑了client和server之间的心跳是因为网络问题，而非服务本身问题，不能简单的删除注册信息
 
+## 网关
+
+参考
+
+https://www.cnblogs.com/crazymakercircle/p/11704077.html
+

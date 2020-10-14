@@ -799,6 +799,46 @@ PUT /_cluster/settings
 
 index.max_result_window: 1000000  默认只能返回10000，可能调用链太长需要修改这个配置(skywalking)
 
+### kibana
+
+```json
+# 常用命令列表，注意非查询请求不要随意执行
+
+GET _search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+# 节点如果有未分片的，可以通过这个命令找到，一般是网络问题导致分片失败并一直无法恢复。关闭分片再开启可以解决问题
+GET /_cluster/allocation/explain
+
+# 解决索引某个shard无法恢复的问题
+POST /_cluster/reroute?retry_failed=true
+
+GET /_cluster/settings
+
+PUT /_cluster/settings
+{
+  "persistent": {
+    "cluster": {
+      "max_shards_per_node":40000
+    }
+  }
+}
+
+PUT /_cluster/settings
+{
+  "transient": {
+    "search.max_buckets": 217483647
+  }
+}
+```
+
+### 参考
+
 ELK 架构参考 https://www.one-tab.com/page/tto_XdDeQlS44BY-ziLvKg
 ELK 搭建 https://www.one-tab.com/page/Fb3B3qd2Q9yR9W92dZ2pYQ
 
+ES操作和知识点补充 https://juejin.im/post/6881527727740944398#heading-27

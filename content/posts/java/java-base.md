@@ -1815,3 +1815,7 @@ public void sayHello(){
 | wsimport.exe       | XMLWebService2.0的JavaAPI，主要用于根据服务端发布的wsdl文件生成客户端存根及框架 
 | xjc.exe            | 主要用于根据XMLschema文件生成对应的Java类。 
 
+
+# JDK 官方版本特性参考
+
+https://www.oracle.com/java/technologies/javase/8u191-relnotes.html
