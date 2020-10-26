@@ -77,3 +77,5 @@ redis-cli -a hccx\!0528  直接输入密码进入
 redis-cli -a qweEX123
 
 redis-cli -n 1   进去之后 auth  输入密码
+
+## k8s 部署redis

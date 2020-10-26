@@ -63,6 +63,8 @@ jdbc:mysql://xx:3306/confluence?sessionVariables=tx_isolation='READ-COMMITTED'&u
 
 docker exec -it mysql-5.7-docker mysqldump -uroot -ph3cqdb45EX confluence > confluence.sql
 
+docker exec -it mysql-5.7-docker mysqldump -uroot -ph3cqdb45EX --databases nacos_server > nacos_server.sql
+
 ## docker部署存在问题
 
 系统对MySQL的配置有要求，可能需要调整

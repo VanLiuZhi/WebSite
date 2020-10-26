@@ -651,3 +651,36 @@ VSZ是Virtual Memory Size（虚拟内存大小）
 ## 故障模拟
 
 https://blog.csdn.net/heavenmark/article/details/82805260
+
+## ssh 免密设置
+
+可以通过 `ssh user@host` 登录其它服务器，并且命令直接执行
+
+前提：1. 服务器之间支持ssh服务。2. 拷贝公钥到各个服务器上
+
+ssh-keygen 生产公钥，步骤直接回车 
+ssh-copy-id username@host 拷贝公钥到其它节点
+
+`ps -e | grep ssh` 检查ssh服务，没有则需要安装 `openssh-server` 模块
+
+## 关于企业内部换源问题
+
+一般企业服务器都是内网的，有自己的源，但是总归是不全的
+
+很多时候我们需要用其它源安装一些其它服务，这个时候我们要添加一个新的源
+
+有意思的地方来了:
+
+由于公司服务器是内网的，而源是外网的，虽然可以挂代理。但是挂了代理会导致公司自己的源无法访问。如果不挂代理，会导致自己添加的源无法访问
+
+比如会出现下面的问题:
+
+```sh
+Loading mirror speeds from cached hostfile
+Error: requested datatype primary not available
+```
+
+因为缓存没有构建，yum clean all 后，需要重建缓存，这个时候挂代理和不挂代理都很尴尬，挂了内网源卡住，不挂，外网源卡住
+
+经验来看，可以挂代理，但是内网源过不了，可以手动ctrl+c跳过无法执行的，保证命令执行完。总之就是要 yum makecache 命令要执行完，卡住的就跳过
+或者就是，先挂，跑一遍，不挂再跑一遍。总之过了 yum makecache 就行。执行安装命令也是，如果需要安装的是外网源的，先读内网源，挂了代理也会卡住，此时就可以跳过，让外网源去执行

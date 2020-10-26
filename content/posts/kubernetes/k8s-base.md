@@ -91,6 +91,10 @@ kubectl get nodes -o wide
 
 kubectl get nodes -o json | jq ".items[] | {name: .metadata.name} + .status.nodeInfo"
 
+## -w 参数
+
+可以通过加 -w 开启资源监控，比如 `kubectl get pod -w -oyaml` 当pod被修改后，可以观察到yaml文件的变化
+
 ## 与k8s交互
 
 在 K8S 中进行部署或者说与 K8S 交互的方式主要有三种：
