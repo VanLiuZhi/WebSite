@@ -48,6 +48,14 @@ https://www.cnblogs.com/kuku0223/p/9232858.html
 
 https://www.cnblogs.com/happy1983/p/9246379.html
 
+https://blog.csdn.net/liukuan73/article/details/79228180
+
+https://blog.csdn.net/weixin_33757911/article/details/91820211
+
+https://blog.csdn.net/mofiu/article/details/77529851?utm_medium=distribute.pc_relevant.none-task-blog-OPENSEARCH-1.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-OPENSEARCH-1.channel_param
+
+https://blog.csdn.net/weixin_42551719/article/details/81386909?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.channel_param
+
 
 ceph-deploy new
 ceph-deploy install
@@ -56,6 +64,10 @@ ceph-deploy gatherkeys
 ceph-deploy admin
 
 rbd 只支持 ReadWriteOnce 和 ReadOnlyMany
+
+pv,pvc
+
+https://blog.csdn.net/dkfajsldfsdfsd/article/details/81319735
 
 
 3. NFS

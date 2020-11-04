@@ -110,9 +110,13 @@ const promise = new Promise(function(resolve, reject) {
   }
 });
 
-promise.then(value=>{
+promise
+// 调用成功后要做的事情
+.then(value=>{
 
-}).catch(error=>{
+})
+// 异常处理
+.catch(error=>{
 
 })
 

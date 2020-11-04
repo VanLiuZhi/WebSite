@@ -684,3 +684,18 @@ Error: requested datatype primary not available
 
 经验来看，可以挂代理，但是内网源过不了，可以手动ctrl+c跳过无法执行的，保证命令执行完。总之就是要 yum makecache 命令要执行完，卡住的就跳过
 或者就是，先挂，跑一遍，不挂再跑一遍。总之过了 yum makecache 就行。执行安装命令也是，如果需要安装的是外网源的，先读内网源，挂了代理也会卡住，此时就可以跳过，让外网源去执行
+
+## Linux dmesg命令用于显示开机信息
+
+kernel会将开机信息存储在ring buffer中。若是开机时来不及查看信息，可利用dmesg来查看。开机信息亦保存在/var/log目录中，名称为dmesg的文件里
+
+通过 `more`,`tail`,`less`或者`grep` 来查看日志
+
+要显示所有被内核检测到的硬盘设备 `dmesg | grep sda`  
+搜索包含 usb的日志  `dmesg | grep -i usb`
+显示开始的前20行 `dmesg | head -20`
+显示后20行 `dmesg | tail -20`
+
+清空dmesg缓冲区日志 `dmesg -c` 该命令会清空dmesg环形缓冲区中的日志。但是你依然可以查看存储在`/var/log/dmesg`文件中的日志。你连接任何的设备都会产生dmesg日志输出。
+
+监控日志输出 `tail -f /var/log/dmesg`

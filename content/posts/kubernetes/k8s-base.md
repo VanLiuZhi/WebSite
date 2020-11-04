@@ -341,9 +341,6 @@ tolerations:
   effect: "NoSchedule"
 ```
 
-
-## 亲和性和非亲和性
-
 ## Jsonnet
 
 Jsonnet 是一个帮助你定义JSON的数据的特殊配置语言。Jsonnet 可以对JSON结构里面的元素进行运算，就像模版引擎给纯文本带来好处一样
@@ -521,7 +518,7 @@ rolling-update 版本操作
 
 patch方式，patch不会去重建Pod，Pod的IP可以保持。kubectl patch -f node.json -p '{"spec":{"unschedulable":true}}'
 
-create 会从完整的yaml文件操作，先删除资源对象再次创建
+create 会从完整的yaml文件操作，先删除资源对象再次创建（测试并不会删除，如果对一个已存在的资源对象操作，会报错该资源已存在）
 
 apply 只会更新yaml文件中声明的部分，所以apply操作的yaml文件可用不完整，但是create要求完整
 
@@ -554,3 +551,69 @@ https://v1-18.docs.kubernetes.io/zh/docs/tasks/administer-cluster/kubelet-config
 
 可以看到,Headless Service不需要分配一个VIP,而是可以直接以DNS记录的方式解析出被代理Pod的IP地址.这样设计有什么好处呢?
 这样设计可以使Kubernetes项目为Pod分配唯一"可解析身份".而有了这个身份之后,只要知道了一个Pod的名字以及它对应的Service的名字,就可以非常确定地通过这条DNS记录访问到Pod的IP地址.
+
+## PVC访问模式，状态，回收策略
+
+```
+访问模式包括：
+ 　▷ ReadWriteOnce —— 该volume只能被单个节点以读写的方式映射
+ 　▷ ReadOnlyMany —— 该volume可以被多个节点以只读方式映射
+   ▷ ReadWriteMany —— 该volume只能被多个节点以读写的方式映射    
+ 状态
+ 　▷ Available：空闲的资源，未绑定给PVC 
+ 　▷ Bound：绑定给了某个PVC 
+ 　▷ Released：PVC已经删除了，但是PV还没有被集群回收 
+ 　▷ Failed：PV在自动回收中失败了 
+ 当前的回收策略有：
+ 　▷ Retain：手动回收
+ 　▷ Recycle：需要擦出后才能再使用
+ 　▷ Delete：相关联的存储资产，如AWS EBS，GCE PD，Azure Disk，or OpenStack Cinder卷都会被删除
+ 　　当前，只有NFS和HostPath支持回收利用，AWS EBS，GCE PD，Azure Disk，or OpenStack Cinder卷支持删除操作。
+```
+
+## PV与PVC绑定
+
+用户创建包含容量、访问模式等信息的PVC，向系统请求存储资源。系统查找已存在PV或者监控新创建PV，如果与PVC匹配则将两者绑定。如果PVC创建动态PV，则系统将一直将两者绑定
+PV与PVC的绑定是`一一对应关系`，不能重复绑定与被绑定。如果系统一直没有为PVC找到匹配PV，则PVC无限期维持在"unbound"状态，直到系统找到匹配PV。实际绑定的PV容量可能大于PVC中申请的容量
+
+`PV 的生命周期独立于 Pod`
+`Pod 消耗的是节点资源，PVC 消耗的是 PV 资源`
+
+## 存储对象使用中保护
+
+如果启用了存储对象使用中保护特性，则不允许将正在被pod使用的活动PVC或者绑定到PVC的PV从系统中移除，防止数据丢失。活动PVC指使用PVC的pod处于pending状态并且已经被指派节点或者处于running状态。
+
+如果已经启用存储对象使用中保护特性，且用户删除正在被pod使用的活动PVC，不会立即删除PVC，而是延后到其状态变成非活动。同样如果用户删除已经绑定的PV，则删除动作延后到PV解除绑定后。
+
+当PVC处于保护中时，其状态为"Terminating"并且其"Finalizers"包含"kubernetes.io/pvc-protection"
+
+## PVC回收策略
+
+pvc不会和pod联动删除，也就是说pvc要手动删除。pv才是集群的资源，通过策略决定当pvc删除的时候，pv做何处理
+Retain的话，则pv存在，可以下次再由新的pvc绑定上去。Delete就是删除pvc的时候会把pv也删除了，这样数据就不存在了
+
+如果是动态创建的pv，比如使用storageClass，pv的回收策略由storageClass决定
+
+## 基于环境变量的服务发现
+
+通常，创建service后，可以通过dns做服务发现。还可以基于环境变量的服务发现
+
+```s
+REDIS_MASTER_SERVICE_HOST=10.0.0.11
+REDIS_MASTER_SERVICE_PORT=6379
+REDIS_MASTER_PORT=tcp://10.0.0.11:6379
+REDIS_MASTER_PORT_6379_TCP=tcp://10.0.0.11:6379
+REDIS_MASTER_PORT_6379_TCP_PROTO=tcp
+REDIS_MASTER_PORT_6379_TCP_PORT=6379
+REDIS_MASTER_PORT_6379_TCP_ADDR=10.0.0.11
+```
+
+环境变量的服务发现有个前提，必须先创建service后创建pod，才能在pod中获取到注入的环境变量
+假如顺序反了，但是之后pod被删除了，此时会创建新的pod，然后这个时候service已经存在了，就可以注入环境变量
+
+## 扩缩容
+
+deployment用rc statefulSet 用sts
+
+kubectl -n monitoring  scale rc prometheus-k8s --replicas=1
+kubectl -n monitoring  scale sts prometheus-k8s --replicas=1
