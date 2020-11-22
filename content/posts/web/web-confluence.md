@@ -60,11 +60,6 @@ create schema confluence character set utf8 collate utf8_bin
 jdbc:mysql://xx:3306/confluence?sessionVariables=tx_isolation='READ-COMMITTED'&useUnicode=true&characterEncoding=utf8
 jdbc:mysql://xx:3306/confluence?sessionVariables=tx_isolation='READ-COMMITTED'&useUnicode=true&characterEncoding=utf8
 
-
-docker exec -it mysql-5.7-docker mysqldump -uroot -ph3cqdb45EX confluence > confluence.sql
-
-docker exec -it mysql-5.7-docker mysqldump -uroot -ph3cqdb45EX --databases nacos_server > nacos_server.sql
-
 ## docker部署存在问题
 
 系统对MySQL的配置有要求，可能需要调整
@@ -110,6 +105,7 @@ admin h3c!agl895AZ
 
 服务地址 xx.com  
 用户名 CN=liuzhi xx,OU=partnerusers,DC=xx,DC=xx,DC=com
+CN=liuzhi ys3415,OU=partnerusers,DC=h3c,DC=huawei-3com,DC=com
 基本DN(减少数据筛选范围) DC=xx,DC=xxcom,DC=com
 
 ADExplorer.exe 一个连接ldap的工具，可以查看数据
@@ -150,9 +146,19 @@ environment:
 volumes:
   - /etc/localtime:/etc/localtime:ro
 
+## 搜索不到用户的问题
+
+有时候想把通过LDAP同步来的账户添加到当前命名空间，但是用户存在却搜索不了的情况
+
+解决办法: 要在全局权限中，先把用户组添加进去，搜不到的用户对应的用户组没有在里面
 
 ## 性能
 
 environment:
     - 'JVM_MINIMUM_MEMORY=4096m'
     - 'JVM_MAXIMUM_MEMORY=8192m'
+
+
+    liuzhi ys3415
+
+    huawei-3com

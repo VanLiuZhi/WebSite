@@ -75,3 +75,10 @@ sudo rabbitmqctl set_permissions -p web_develop dongwm ".*" ".*" ".*"
 - sudo rabbitmqctl list_vhosts
 - sudo rabbitmqctl list_queue -p web_develop
 - sudo rabbitmqctl list_users
+
+## 版本号
+
+RabbitMQ 3.8.9 --- 28 Sep 2020
+RabbitMQ 3.8.8 --- 03 Sep 2020
+RabbitMQ 3.8.7 --- 17 Aug 2020
+

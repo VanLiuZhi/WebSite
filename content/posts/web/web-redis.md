@@ -78,4 +78,83 @@ redis-cli -a qweEX123
 
 redis-cli -n 1   进去之后 auth  输入密码
 
+## 集群
+
+Redis Cluster是一组Redis实例，旨在通过对数据库进行分区来扩展数据库，从而使其更具弹性。
+群集中的每个成员（无论是主副本还是辅助副本）都管理哈希槽的子集。如果主机无法访问，则其从机将升级为主机。在由三个主节点组成的最小Redis群集中，每个主节点都有一个从节点（以实现最小的故障转移），每个主节点都分配有一个介于0到16383之间的哈希槽范围。节点A包含从0到5000的哈希槽，节点B从5001到10000，节点C从10001到16383
+
+## 集群CTL镜像
+
+kubectl run -it ubuntu --image=ubuntu --restart=Never -n public-service bash
+kubectl run -it ubuntu --image=hub.eos-ts.h3c.com/ubuntu --restart=Never -n redis bash
+kubectl run -it ubuntu --image=hub.eos-ts.h3c.com/redis-trib:v1 --restart=Never -n redis bash
+
+```
+cat > /etc/apt/sources.list << EOF
+deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial main restricted
+deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-updates main restricted
+deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial universe
+deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-updates universe
+deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial multiverse
+deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-updates multiverse
+deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-backports main restricted universe multiverse
+deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-security main restricted
+deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-security universe
+deb http://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-security multiverse
+EOF
+```
+
+代理设置
+
+export http_proxy="http://Lys3415:destinymy6EX@proxy02.h3c.com:8080"
+export https_proxy="https://Lys3415:destinymy6EX@proxy02.h3c.com:8080"
+
+apt-get update
+apt-get install -y libncursesw5 libreadline6 libtinfo5 --allow-remove-essential
+apt-get install -y libpython2.7-stdlib python2.7 python-pip redis-tools dnsutils
+pip install --upgrade pip
+pip install redis-trib==0.5.1
+
+修改redis-trib源码
+
+从pip上下载源码并解压，此时有 redis-trib-0.5.0 的两层目录，修改源码后，把两层 redis-trib-0.5.0 目录删了一层，使用 7-zip工具，添加压缩包选择tar压缩，再压缩一次选择gzip压缩。这样就得到修改源码后的安装包
+
+源码地址：
+
+https://github.com/projecteru/redis-trib.py
+
 ## k8s 部署redis
+
+kubectl run -it ubuntu --image=hub.eos-ts.h3c.com/redis-trib:v1 --restart=Never -n public-service bash
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-conf
+data:
+  redis.conf: |
+    bind 0.0.0.0
+    port 6379
+    requirepass 123456
+    pidfile .pid
+    appendonly yes
+    cluster-config-file nodes-6379.conf
+    pidfile /data/middleware-data/redis/log/redis-6379.pid
+    cluster-config-file /data/middleware-data/redis/conf/redis.conf
+    dir /data/middleware-data/redis/data/
+    logfile "/data/middleware-data/redis/log/redis-6379.log"
+    cluster-node-timeout 5000
+    protected-mode no
+```
+
+## 查看集群信息
+
+redis-cli -c
+
+auth 身份认证
+
+CLUSTER NODES #列出节点信息
+CLUSTER INFO  #集群状态
+
+set key value

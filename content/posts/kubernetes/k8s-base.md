@@ -530,7 +530,7 @@ kubectl proxy --port=8009
 开放地址
 kubectl proxy --address=0.0.0.0  --port=8009
 
-授权其它主机(相当于其它服务都能随意服务，可用限制accept的范围)
+授权其它主机(相当于其它服务都能随意服务，可以限制accept的范围)
 kubectl proxy --address='0.0.0.0'  --accept-hosts='^*$' --port=8009
 
 ## kubelet 配置
@@ -553,6 +553,8 @@ https://v1-18.docs.kubernetes.io/zh/docs/tasks/administer-cluster/kubelet-config
 这样设计可以使Kubernetes项目为Pod分配唯一"可解析身份".而有了这个身份之后,只要知道了一个Pod的名字以及它对应的Service的名字,就可以非常确定地通过这条DNS记录访问到Pod的IP地址.
 
 ## PVC访问模式，状态，回收策略
+
+PVC是有命名空间的，而PV是集群级别的资源对象
 
 ```
 访问模式包括：
@@ -611,9 +613,82 @@ REDIS_MASTER_PORT_6379_TCP_ADDR=10.0.0.11
 环境变量的服务发现有个前提，必须先创建service后创建pod，才能在pod中获取到注入的环境变量
 假如顺序反了，但是之后pod被删除了，此时会创建新的pod，然后这个时候service已经存在了，就可以注入环境变量
 
-## 扩缩容
+## 扩缩容scale
 
 deployment用rc statefulSet 用sts
 
 kubectl -n monitoring  scale rc prometheus-k8s --replicas=1
 kubectl -n monitoring  scale sts prometheus-k8s --replicas=1
+
+## StorageClass
+
+StorageClass 是集群的概念，并且创建后不能随意修改一些配置，比如provisioner
+
+## terminationGracePeriodSeconds
+
+K8S 会给老POD发送SIGTERM信号，并且等待 terminationGracePeriodSeconds 这么长的时间(默认为30秒)，然后终止pod
+terminationGracePeriodSeconds是留给程序的缓冲时间
+
+## 启动命令和参数
+
+command: ["/bin/sh", "-c", "my.py xxx"]
+
+建议使用这种方式，前0，1个元素固定不变，把执行命令和参数写到第3个元素位置
+
+复杂一点的情况，可以使用args，命令的全部都算成一个元素，注意 `-` 只用了一个，里面的内容都会作为一个脚本的内容被执行
+
+```yaml
+command: ["/bin/sh"]
+args:
+  - "-c"
+  - redis-trib.py replicate
+    --password qwe123456
+    --master-addr `dig +short redis-cluster5-redis-0.redis-cluster5-headless-service.redis.svc.cluster.local`:6379
+    --slave-addr `dig +short redis-cluster5-redis-3.redis-cluster5-headless-service.redis.svc.cluster.local`:6379
+```
+
+```yaml
+command: ['sh']
+args:
+- "-c"
+- |
+  set -ex
+  cp /configmap/* /etc/rabbitmq
+  rm -f /var/lib/rabbitmq/.erlang.cookie
+  {{- if .Values.forceBoot }}
+  if [ -d "${RABBITMQ_MNESIA_DIR}" ]; then
+    touch "${RABBITMQ_MNESIA_DIR}/force_load"
+  fi
+  {{- end }}
+```
+
+如果要执行多组命令，用`;`分割
+
+```yaml
+command: ["/bin/sh"]
+args:
+  - "-c"
+  - redis-trib.py replicate
+    --password qwe123456
+    --master-addr `dig +short redis-cluster5-redis-1.redis-cluster5-headless-service.redis.svc.cluster.local`:6379
+    --slave-addr `dig +short redis-cluster5-redis-4.redis-cluster5-headless-service.redis.svc.cluster.local`:6379;
+    redis-trib.py replicate
+    --password qwe123456
+    --master-addr `dig +short redis-cluster5-redis-2.redis-cluster5-headless-service.redis.svc.cluster.local`:6379
+    --slave-addr `dig +short redis-cluster5-redis-5.redis-cluster5-headless-service.redis.svc.cluster.local`:6379
+```
+
+参考：
+
+https://kubernetes.io/zh/docs/tasks/inject-data-application/define-command-argument-container/
+
+## 删除K8s Namespace时卡在Terminating状态
+
+`kubectl get namespace redis -o json > tmp.json`
+`kubectl get namespace test-rabbitmq -o json > tmp.json`
+
+修改tmp.json删除其中的spec字段，当前目录执行命令
+
+`curl -H "Authorization: Bearer tokenXXX" -k  -H "Content-Type: application/json" -X PUT --data-binary @tmp.json https://xxx:6443/api/v1/namespaces/redis/finalize`
+
+本次演示的是删除redis的命名空间

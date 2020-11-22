@@ -24,32 +24,52 @@ toc:
   auto: false
 ---
 
-
+Nfs 网络共享存储在 kubernetes 中的运用
 
 <!--more-->
 
 ## 概述
 
-nfs文件共享服务。需要一台服务器A挂载一个目录作为共享目录，其它服务器B,C,D可以访问这个目录，实现文件共享
+nfs Network File System 文件共享服务
+
+需要一台服务器A挂载一个目录作为共享目录，其它服务器B,C,D可以访问这个目录，实现文件共享
 
 A需要提供nfs服务和rpc服务。BCD准备rpc服务即可
 
-## 服务端安装(centos-7)
+涉及到的端口是2049 111等，nfs 配置文件是 `/etc/exports`
+
+
+NFS工作原理
+
+```
+首先服务器端启动RPC服务，并开启111端口
+
+服务器端启动NFS服务，并向RPC注册端口信息
+
+客户端启动RPC（portmap服务），向服务端的RPC(portmap)服务请求服务端的NFS端口
+
+服务端的RPC(portmap)服务反馈NFS端口信息给客户端。
+
+客户端通过获取的NFS端口来建立和服务端的NFS连接并进行数据的传输
+```
+
+## 服务端安装(centos-7) 
 
 `yum -y install nfs-utils`
 
 ```
 yum install -y rpcbind 
 实际上需要安装两个包nfs-utils和rpcbind, 不过当使用yum安装nfs-utils时会把rpcbind一起安装上
+centos-6和7服务有差异，需要注意
 ```
 
 配置共享目录
 
-vim /etc/exports   
+`vim /etc/exports`   
 
 加入
 
-`/public 10.90.15.0/24(rw,sync,fsid=0)` 或者 `/home/k8s *(rw,root_squash,no_all_squash,sync)`  任何ip都访问
+`/public 10.90.15.0/24(rw,sync,fsid=0)` 或者 `/home/k8s *(rw,root_squash,no_all_squash,sync)` 任何ip都访问
 
 ```
 1. rw表示可读写，ro只读
@@ -73,7 +93,8 @@ systemctl start rpcbind.service
 systemctl start nfs.service
 ```
 
-showmount -e 加当前服务器ip，检查nfs服务。返回一下输出说明正常
+showmount -e 加当前服务器ip，检查nfs服务，显示NFS服务器的共享列表。返回一下输出说明正常
+showmount -a 查看本机的挂载情况(只能在服务端执行)
 
 ```s
 [root@k8s-01 ~]# showmount -e 10.90.15.xx
@@ -83,6 +104,16 @@ Export list for 10.90.15.xx:
 
 如果修改了共享目录，记得重启nfs服务 systemctl restart nfs.service
 最好关闭防火墙 systemctl stop firewalld.service 或者配置防火墙规则
+
+让修改过的配置文件生效 `exportfs –arv`
+
+```
+使用exportfs命令，当改变/etc/exports配置文件后，不用重启nfs服务直接用这个exportfs即可，它的常用选项为[-aruv].     
+-a ：全部挂载或者卸载；      
+-r ：重新挂载；      
+-u ：卸载某一个目录；      
+-v ：显示共享的目录；
+```
 
 ## 客户端安装
 
@@ -100,8 +131,10 @@ Export list for 10.90.15.xx:
 `mkdir /opt/nfs` 
 `mount -t nfs 10.90.15.xx:/opt/nfs/ /opt/nfs/`
 
-`showmount -e` 检查挂载情况
+检查挂载情况 `showmount -e` 
 或者 `df -h`
+
+卸载挂载：`umount /opt/nfs/`
 
 ## 测试
 
@@ -119,6 +152,8 @@ statefulset pvc模块创建的pod，也必须跑着拥有rpcbind服务的节点�
 
 使用插件后，会自动在服务端共享目录创建文件夹，并且权限已经设置，可以进行读写操作
 
+客户端不需要手动挂载了，由k8s帮我们挂载，目录也不需要去手动创建，保证服务端设置正确，k8s插件连接到正确的服务端配置，工作节点都安装了rpc服务，其它交给k8s
+
 ## k8s中部署
 
 在整个集群中工作节点准备好rpcbind服务，保证能和nfs服务端通信
@@ -131,7 +166,7 @@ kind: ServiceAccount
 metadata:
   name: nfs-client-provisioner
   # replace with namespace where provisioner is deployed
-  namespace: default        #根据实际环境设定namespace,下面类同
+  namespace: default        # 根据实际环境设定namespace,下面类同
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
@@ -252,3 +287,14 @@ metadata:
   name: managed-nfs-storage
 provisioner: eos-nfs-storage # 这里的名称要和provisioner配置文件中的环境变量PROVISIONER_NAME保持一致 parameters: archiveOnDelete: "false"
 ```
+
+
+## 参考
+
+https://blog.csdn.net/qq_38265137/article/details/83146421
+
+https://blog.csdn.net/u011418530/article/details/89307874
+
+https://www.cnblogs.com/panwenbin-logs/p/12196286.html
+
+https://www.cnblogs.com/panwenbin-logs/p/12196286.html

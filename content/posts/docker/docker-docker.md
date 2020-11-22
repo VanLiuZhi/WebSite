@@ -308,6 +308,14 @@ VOLUME
 WORKDIR
 ```
 
+如果需要把本地文件在镜像中使用，需要进行拷贝。ADD和COPY
+
+ADD：将本地文件添加到容器中，tar类型文件会自动解压(网络压缩资源不会被解压)，可以访问网络资源，类似wget
+如果目的位置不存在，Docker会自动创建所需要的目录结
+
+COPY：功能类似ADD，但是是不会自动解压文件，也不能访问网络资源
+就是不能解压，其他限制条件跟ADD一样
+
 ## docker-compose
 
 这个工具是用来做容器编排的，简单来说就是可以一次启动多个容器，包括了设置端口映射，数据卷，容器连接等。在使用docker部署项目时，还是应该一个软件对应一个容器，而不是基于一个容器安装多个软件（这样就搞成一个虚拟机了），你要依次启动4，5个容器，设置端口映射，容器连接等会很麻烦，使用docker-compose只需要编写一个 `docker-compose.yaml` 文件就可以了。
@@ -613,6 +621,12 @@ docker run 打印 hello world，docker run van 打印 hello van
 
 要注意，如果要使用环境变量，比如`$HOME`，那么`ENTRYPOINT ["echo", "$HOME"]`是不会替换环境变量的，只能使用shell模式
 `ENTRYPOINT echo $HOME`
+
+
+如果command和args均没有写，那么用Docker默认的配置。
+如果command写了，但args没有写，那么Docker默认的配置会被忽略而且仅仅执行.yaml文件的command（不带任何参数的）。
+如果command没写，但args写了，那么Docker默认配置的ENTRYPOINT的命令行会被执行，但是调用的参数是.yaml中的args。
+如果如果command和args都写了，那么Docker默认的配置被忽略，使用.yaml的配置
 
 ## 查看容器内存
 
