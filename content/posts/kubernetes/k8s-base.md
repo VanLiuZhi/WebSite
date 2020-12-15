@@ -692,3 +692,113 @@ https://kubernetes.io/zh/docs/tasks/inject-data-application/define-command-argum
 `curl -H "Authorization: Bearer tokenXXX" -k  -H "Content-Type: application/json" -X PUT --data-binary @tmp.json https://xxx:6443/api/v1/namespaces/redis/finalize`
 
 本次演示的是删除redis的命名空间
+
+## 在deployment中使用pvc，pv通过storageClass创建
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: test-pvc
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "course-nfs-storage" # storageClass名称
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Mi
+```
+
+```yaml
+volumes:
+  - name: nfs-pvc
+    persistentVolumeClaim:
+      claimName: test-pvc # pvc名称
+```
+
+
+## securityContext
+
+我们可用通过securityContext获得较高的权限，执行一些命令
+
+比如在容器启动前，修改somaxconn
+
+```yaml
+initContainers:
+   - name: sysctl
+      image: alpine:3.10
+      securityContext:
+          privileged: true
+       command: ['sh', '-c', "echo 511 > /proc/sys/net/core/somaxconn"]
+```
+
+## Configmap 动态更新的实现
+
+Configmap或Secret使用有两种方式，一种是env系统变量赋值，一种是volume挂载赋值，env写入系统的configmap是不会热更新的，而volume写入的方式支持热更新！
+
+对于env环境的，必须要滚动更新pod才能生效，也就是删除老的pod，重新使用镜像拉起新pod加载环境变量才能生效。
+对于volume的方式，虽然内容变了，但是需要我们的应用直接监控configmap的变动，或者一直去更新环境变量才能在这种情况下达到热更新的目的。
+
+应用不支持热更新，可以在业务容器中启动一个sidercar容器，监控configmap的变动，更新配置文件，或者也滚动更新pod达到更新配置的效果。
+
+可用使用Reloader来实现pod的滚动更新，生效configMap 参考: https://juejin.cn/post/6897882769624727559
+
+## 获取API版本
+
+kubectl api-versions
+
+## K8S Pod 保护之 PodDisruptionBudget
+
+这是k8s保证服务SLA的一种策略，当自愿中断（或者叫主动逃离，即显示的命令操作等，比如删除控制器，删除Pod。与之相对的非自愿中断就是比如OOM一类的）发生的过程中，PDB会保证Pod至少有一定的数量可用
+
+比如10个Pod，PDB是2，那么因为滚动升级，k8s会保证至少有2个pod能够使用
+
+```
+1、minAvailable设置成了数值5：应用POD集群中最少要有5个健康可用的POD，那么就可以进行操作。
+
+2、minAvailable设置成了百分数30%：应用POD集群中最少要有30%的健康可用POD，那么就可以进行操作。
+
+3、maxUnavailable设置成了数值5：应用POD集群中最多只能有5个不可用POD，才能进行操作。
+
+4、maxUnavailable设置成了百分数30%：应用POD集群中最多只能有30%个不可用POD，才能进行操作。
+```
+
+参考： https://www.jianshu.com/p/7da065228a04
+
+## /etc/resolv.conf
+
+/etc/resolv.conf它是DNS客户机配置文件，用于设置DNS服务器的IP地址及DNS域名，还包含了主机的域名搜索顺序。
+该文件是由域名解析 器（resolver，一个根据主机名解析IP地址的库）使用的配置文件。
+它的格式很简单，每行以一个关键字开头，后接一个或多个由空格隔开的参数。
+
+resolv.conf  的关键字主要有四个，分别是：
+
+```s
+nameserver    //定义DNS服务器的IP地址
+domain        //定义本地域名
+search        //定义域名的搜索列表
+sortlist      //对返回的域名进行排序
+```
+
+一般用的最多的是nameserver
+
+1. nameserver　
+表明DNS服务器的IP地址。可以有很多行的nameserver，每一个带一个IP地址。在查询时就按nameserver在本文件中的顺序进行，且只有当第一个nameserver没有反应时才查询下面的nameserver。
+
+2. domain　　　
+声明主机的域名。很多程序用到它，如邮件系统；当为没有域名的主机进行DNS查询时，也要用到。如果没有域名，主机名将被使用，删除所有在第一个点( .)前面的内容。
+
+3. search　　　
+它的多个参数指明域名查询顺序。当要查询没有域名的主机，主机将在由search声明的域中分别查找。domain和search不能共存；如果同时存在，后面出现的将会被使用。
+
+4. sortlist　　
+允许将得到域名结果进行特定的排序。它的参数为网络/掩码对，允许任意的排列顺序。
+
+`k8s的运用`：k8s默认会给 /etc/resolv.conf 文件新增 4 个搜索域，查看pod的配置，可以找到以下内容
+
+```
+nameserver 10.96.0.10
+search eos-mid-public.svc.cluster.local svc.cluster.local cluster.local
+options ndots:5
+```

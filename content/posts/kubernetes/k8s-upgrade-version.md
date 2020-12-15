@@ -232,6 +232,14 @@ https://kubernetes.io/zh/docs/reference/setup-tools/kubeadm/kubeadm-init/
 
 https://platformengineer.com/fix-kubernetes-bootstrap-client-certificate-expired-error/
 
+## 内存问题(重要)
+
+https://cloud.tencent.com/developer/article/1637682
+
+## k8s故障处理
+
+https://www.cnblogs.com/rancherlabs/p/12330916.html
+
 高版本可用直接使用 kubeadm alpha certs renew all 更新，具体命令查看文档
 
 ```

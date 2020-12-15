@@ -154,7 +154,7 @@ statefulset pvc模块创建的pod，也必须跑着拥有rpcbind服务的节点�
 
 客户端不需要手动挂载了，由k8s帮我们挂载，目录也不需要去手动创建，保证服务端设置正确，k8s插件连接到正确的服务端配置，工作节点都安装了rpc服务，其它交给k8s
 
-## k8s中部署
+## k8s中部署NFS插件，通过StorageClass动态创建
 
 在整个集群中工作节点准备好rpcbind服务，保证能和nfs服务端通信
 
@@ -255,6 +255,7 @@ spec:
               - matchExpressions:
                   - key: kubernetes.io/hostname
                     operator: In
+                    # 指定在06节点，即挂载nfs硬盘的节点(不是非必须的)
                     values:
                       - k8s-06
       serviceAccountName: nfs-client-provisioner
@@ -285,9 +286,25 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: managed-nfs-storage
-provisioner: eos-nfs-storage # 这里的名称要和provisioner配置文件中的环境变量PROVISIONER_NAME保持一致 parameters: archiveOnDelete: "false"
+provisioner: eos-nfs-storage # 这里的名称要和provisioner配置文件中的环境变量PROVISIONER_NAME保持一致 
 ```
 
+
+在StateFulSet中通过volumeClaimTemplates模板，动态创建PVC，PV
+
+```yaml
+volumeClaimTemplates:                   # 用于持久化的模板
+  - metadata:
+      name: redis-data
+      annotations:
+        # 主要是这一句的配置，指定StorageClass
+        volume.beta.kubernetes.io/storage-class: "managed-nfs-storage"
+    spec:
+      accessModes: ["ReadWriteMany"]
+      resources:
+        requests:
+          storage: 500M
+```
 
 ## 参考
 

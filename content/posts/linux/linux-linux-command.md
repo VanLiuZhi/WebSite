@@ -699,3 +699,63 @@ kernel会将开机信息存储在ring buffer中。若是开机时来不及查看
 清空dmesg缓冲区日志 `dmesg -c` 该命令会清空dmesg环形缓冲区中的日志。但是你依然可以查看存储在`/var/log/dmesg`文件中的日志。你连接任何的设备都会产生dmesg日志输出。
 
 监控日志输出 `tail -f /var/log/dmesg`
+
+## ls 查看文件大小
+
+ls -al --block-size=m  以MB显示文件大小
+ls -al --block-size=k  kb显示
+ls -al --block-size=g  GB显示
+
+## 修改文件描述符大小
+
+修改系统最大值
+
+查看：``cat /proc/sys/fs/file-max`
+
+临时修改：`echo 6553500 > /proc/sys/fs/file-max`
+
+永久生效
+`vim /etc/sysctl.conf`
+`sysctl -p`
+
+修改单进程打开最大值
+
+cat /proc/sys/fs/nr_open
+echo 102400 > /proc/sys/fs/nr_open
+vim /etc/sysctl.conf
+sysctl -p
+
+## EOF命令 
+
+追加
+
+```
+cat << EOF >> .bashrc
+alias uproxy='export http_proxy='
+alias nproxy='unset http_proxy && unset https_proxy'
+EOF
+```
+
+创建文件并写
+
+```
+cat > config.yml <<EOF
+usePassword: true
+mariadbRootPassword: will
+mariadbUser: will
+mariadbPassword: will
+mariadbDatabase: will
+persistence:
+  enabled: false
+EOF
+```
+
+参考：https://www.cnblogs.com/kevingrace/p/6257490.html
+
+
+# du 命令 查看目录或文件大小
+
+du a.log -h
+du /test -h
+
+-h 会自动转换单位，一般用这个就行了。然后可以跟目录，会统计出下面的所有文件来，或者直接指定文件

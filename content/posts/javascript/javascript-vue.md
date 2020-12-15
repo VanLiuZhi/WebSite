@@ -484,4 +484,30 @@ that.DataList.forEach(el => {
 
 另外路由有生命周期，可以在进入路由，跳去下一个路由的时候做处理，比如改变路由meta数据，然后关联keep-alive实现动态缓存组件
 
+## el-card 固定一行条目的布局
+
+我们可能需要把固定的条目(4个为一行)由`el-row`标签包裹，每一条目是`el-col`，具体实现思路是先计算有多少行，然后分组数据
+
+```html
+computed: {
+    pages () {
+      const pages = []
+      this.allprojects.forEach((item, index) => {
+        const page = Math.floor(index / 4)//4代表4条为一行，随意更改
+        if (!pages[page]) {
+          pages[page] = []
+        }
+        pages[page].push(item)
+      })
+      return pages
+    }
+  }
+
+<el-row v-for="(page, index) of pages" :key="index" >
+    <el-col :span="4" v-for="(item, innerindex) of page" :key="item.projectId" :offset="innerindex > 0 ? 2 : 1">
+     //code...
+    </el-col>
+</el-row>
+```
+
 

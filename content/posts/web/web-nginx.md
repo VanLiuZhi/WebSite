@@ -207,3 +207,15 @@ server {
     }
 }
 {% endcodeblock %}
+
+## try_files 处理回调问题
+
+`try_files      $uri $uri  /index.html`
+
+try_files的第一个‘$uri’代表nginx会去硬盘的对应路径寻找文件，如果能找到，则向下执行location块中的内容，也就是把找到的文件交给fastcgi执行，如果找不到，则尝试在访问的uri后面追加‘/’，并继续在硬盘中寻找对应目录，处理同上，否则将这次请求内部重定向到最后一个参数，也就是返回404。
+
+这里需要注意几点：
+
+一是访问’your.site.com/example‘时，若没有配置’$uri/‘则nginx只会去找对应的example文件，而不会找example目录；若访问’your.site.com/example/‘，nginx只会去找对应的example目录，而不会找example文件。也就是说若没有try_files这项配置，nginx会完全按照请求的uri去硬盘中找文件（不以’/‘结尾）或目录（以’/‘结尾），不会擅自加添或去掉'/'。
+
+二是try_files只是让nginx’尝试去找文件‘，找完不会直接跳出location块，而是会顺着往下执行，后面有proxy_pass或fastcgi_pass则将找到的文件转发到对应的地方，没有proxy_pass或fastcgi_pass则直接将文件返回给客户端。当找不到文件时，将这次请求内部重定向到最后一个参数，所以最后一个参数必须存在，例如 ‘=404’或重定向到其他的location等等，若不存在，则可能出现服务器内部异常，例如循环重定向的异常。
