@@ -1,0 +1,376 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kong1-serviceaccount
+  namespace: kong
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: kong1-ingress-clusterrole
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - endpoints
+      - nodes
+      - pods
+      - secrets
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+    verbs:
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - networking.k8s.io
+      - extensions
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+  - apiGroups:
+      - networking.k8s.io
+      - extensions
+    resources:
+      - ingresses/status
+    verbs:
+      - update
+  - apiGroups:
+      - configuration.konghq.com
+    resources:
+      - kongplugins
+      - kongcredentials
+      - kongconsumers
+      - kongingresses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resourceNames:
+      - ingress-controller-leader-kong
+    resources:
+      - configmaps
+    verbs:
+      - get
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - create
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: kong1-ingress-clusterrole-nisa-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kong1-ingress-clusterrole
+subjects:
+  - kind: ServiceAccount
+    name: kong1-serviceaccount
+    namespace: kong
+---
+apiVersion: v1
+data:
+  servers.conf: |
+    # Prometheus metrics server
+    server {
+        server_name kong_prometheus_exporter;
+        listen 0.0.0.0:9542; # can be any other port as well
+        access_log off;
+
+        location /metrics {
+            default_type text/plain;
+            content_by_lua_block {
+                 local prometheus = require "kong.plugins.prometheus.exporter"
+                 prometheus:collect()
+            }
+        }
+
+        location /nginx_status {
+            internal;
+            stub_status;
+        }
+    }
+    # Health check server
+    server {
+        server_name kong_health_check;
+        listen 0.0.0.0:9001; # can be any other port as well
+
+        access_log off;
+        location /health {
+          return 200;
+        }
+    }
+kind: ConfigMap
+metadata:
+  name: kong1-server-blocks
+  namespace: kong
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  #service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
+  #service.beta.kubernetes.io/aws-load-balancer-type: nlb
+  name: kong1-proxy
+  namespace: kong
+spec:
+  #externalTrafficPolicy: Local
+  ports:
+    - name: proxy
+      port: 80
+      protocol: TCP
+      targetPort: 8000
+    - name: proxy-ssl
+      port: 443
+      protocol: TCP
+      targetPort: 8443
+  selector:
+    app: ingress-kong1
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kong1-ingress-controller
+  namespace: kong
+spec:
+  type: NodePort
+  ports:
+    - name: kong-admin
+      port: 8002
+      targetPort: 8002
+      nodePort: 30002
+      protocol: TCP
+  selector:
+    app: ingress-kong1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ingress-kong1
+  name: ingress-kong1
+  namespace: kong
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ingress-kong1
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9542"
+        prometheus.io/scrape: "true"
+        traffic.sidecar.istio.io/includeInboundPorts: ""
+      labels:
+        app: ingress-kong1
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      nodeSelector:
+        #node: kong
+        kubernetes.io/hostname: k8s-07
+      containers:
+        - env:
+            - name: KONG_SSL_CIPHER_SUITE
+              value: intermediate
+            - name: KONG_SSL_PROTOCOLS
+              value: TLSv1 TSLv1.1 TSL1.2
+            - name: KONG_DATABASE
+              value: postgres
+            - name: KONG_PG_HOST
+              value: eos-postgres1.eos-system
+            - name: KONG_PG_PORT
+              value: "5433"
+            - name: KONG_PG_PASSWORD
+              value: kong
+            - name: KONG_NGINX_WORKER_PROCESSES
+              value: "1"
+            - name: KONG_NGINX_HTTP_INCLUDE
+              value: /kong/servers.conf
+            - name: KONG_ADMIN_ACCESS_LOG
+              value: /dev/stdout
+            - name: KONG_ADMIN_ERROR_LOG
+              value: /dev/stderr
+            - name: KONG_ADMIN_LISTEN
+              value: 0.0.0.0:8002, 0.0.0.0:8444 ssl
+            - name: KONG_PROXY_LISTEN
+              value: 0.0.0.0:80, 0.0.0.0:443 ssl http2
+          image: hub.eos.h3c.com/kong/kong:1.3.0
+          #isecurityContext:
+          # runAsUser: 0
+          #capabilities:
+          #privileged: true
+          #add:
+          #  - NET_BIND_SERVICE
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - kong quit
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 9001
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: proxy
+          ports:
+            - containerPort: 80
+              name: proxy
+              protocol: TCP
+            - containerPort: 443
+              name: proxy-ssl
+              protocol: TCP
+            - containerPort: 9542
+              name: metrics
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 9001
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - mountPath: /kong
+              name: kong1-server-blocks
+        - args:
+            - /kong1-ingress-controller
+            - --kong-url=https://localhost:8444
+            - --ingress-class=kong1
+            - --admin-tls-skip-verify
+            - --publish-service=kong/kong-proxy
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+          image: hub.eos.h3c.com/kong/kong-ingress-controller:0.6.2
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 10254
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: ingress-controller
+          ports:
+            - containerPort: 8080
+              name: webhook
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 10254
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+      initContainers:
+        - command:
+            - /bin/sh
+            - -c
+            - while true; do kong migrations list; if [[ 0 -eq $? ]]; then exit 0; fi;
+              sleep 2;  done;
+          env:
+            - name: KONG_PG_HOST
+              value: eos-postgres1.eos-system
+            - name: KONG_PG_PORT
+              value: "5433"
+            - name: KONG_PG_PASSWORD
+              value: kong
+          image: hub.eos.h3c.com/kong/kong:1.3.0
+          name: wait-for-migrations
+      serviceAccountName: kong1-serviceaccount
+      volumes:
+        - configMap:
+            name: kong1-server-blocks
+          name: kong1-server-blocks
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kong1-migrations
+  namespace: kong
+spec:
+  template:
+    metadata:
+      name: kong1-migrations
+    spec:
+      containers:
+        - command:
+            - /bin/sh
+            - -c
+            - kong migrations bootstrap
+          env:
+            - name: KONG_PG_PASSWORD
+              value: kong
+            - name: KONG_PG_HOST
+              value: eos-postgres1.eos-system
+            - name: KONG_PG_PORT
+              value: "5433"
+          image: hub.eos.h3c.com/kong/kong:1.3.0
+          name: kong1-migrations
+      initContainers:
+        - command:
+            - /bin/sh
+            - -c
+            - until nc -zv $KONG_PG_HOST $KONG_PG_PORT -w1; do echo 'waiting for db';
+              sleep 1; done
+          env:
+            - name: KONG_PG_HOST
+              value: eos-postgres1.eos-system
+            - name: KONG_PG_PORT
+              value: "5433"
+          image: hub.eos.h3c.com/kong/busybox
+          name: wait-for-postgres
+      restartPolicy: OnFailure

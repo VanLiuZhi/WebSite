@@ -157,3 +157,54 @@ mybatis是在国内非常通用的MySQL，有很多延伸扩展
 ### mybatis-generator
 
 简称MBG，是mybatis的逆向工程，由数据库表创建相关代码
+
+## mybatis-plus
+
+查询，使用lambda
+
+```java
+LambdaQueryWrapper<EosPaasMonitor> eq = Wrappers.<EosPaasMonitor>lambdaQuery()
+                .eq(EosPaasMonitor::getProject, project)
+                .eq(EosPaasMonitor::getName, name);
+        EosPaasMonitor eosPaasMonitor = eosPaasMonitorDao.selectOne(eq);
+
+eosPaasMonitorDao.selectOne(Wrappers.<EosPaasMonitor>lambdaQuery().select(EosPaasMonitor::getProject).eq(EosPaasMonitor::getName, name))
+```
+
+常规用法
+
+```java
+QueryWrapper<EosPaasRedis> wrapper = new QueryWrapper<>();
+            wrapper.eq("project", project)
+                    .eq("name", name)
+                    .eq("delete_flag", Constants.NORMAL);
+            EosPaasRedis eosPaasRedis = eosPaasRedisDao.selectOne(wrapper);
+```
+
+更新数据，根据指定条件查出后更新
+
+```java
+UpdateWrapper<EosPaasPort> updateWrapper = new UpdateWrapper<>();
+                updateWrapper
+                        .set("is_used", Constants.PORT_USE)
+                        .eq("id", eosPaasPortItem.getId());
+                eosPaasPortDao.update(eosPaasPortItem, updateWrapper);
+```
+
+使用Map作为查询条件，查询类似
+
+```java
+Map<String, Object> map = new HashMap<>();
+        map.put("project", rabbitmqConfigDTO.getProject());
+        map.put("name", rabbitmqConfigDTO.getName());
+        eosPaasMonitorDao.deleteByMap(map);
+```
+
+lambda查询，如果字段不存在则查询条件不生效
+
+```java
+queryWrapper.lambda()
+        .eq(ObjectUtil.isNotEmpty(template.getCode()), MsgTemplate::getCode, template.getCode())
+        .eq(ObjectUtil.isNotEmpty(template.getType()), MsgTemplate::getType, template.getType())
+        .orderByAsc(MsgTemplate::getSort); 
+```
