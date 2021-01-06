@@ -41,6 +41,8 @@ kubernetes新版本都会优化很多功能，完善系统稳定性，本文将�
 
 kubectl -n kube-system get cm kubeadm-config -oyaml  查看配置文件
 
+我们需要解决的就是Linux软件包源，以及docker镜像源，即可完成安装
+
 ### 切换yum源
 
 相关软件，比如kubelet，kubeadm都是需要科学上网的，可以换用阿里云的源
@@ -71,89 +73,67 @@ EOF
 
 我们从Docker Huber拉取镜像，kubesphere这个owner下会定期同步官方镜像，基本上很全面了
 
-```sh
-sudo docker pull kubesphere/kube-proxy:v1.15.1
-sudo docker pull kubesphere/kube-scheduler:v1.15.1
-sudo docker pull kubesphere/kube-apiserver:v1.15.1
-sudo docker pull kubesphere/kube-controller-manager:v1.15.1
-
-# 使用阿里的仓库
-sudo docker pull registry.aliyuncs.com/google_containers/kube-proxy:v1.15.1
-sudo docker pull registry.aliyuncs.com/google_containers/kube-scheduler:v1.15.1
-sudo docker pull registry.aliyuncs.com/google_containers/kube-apiserver:v1.15.1
-sudo docker pull registry.aliyuncs.com/google_containers/kube-controller-manager:v1.15.1
-```
-
-```sh
-sudo docker tag registry.aliyuncs.com/google_containers/kube-proxy:v1.15.1 k8s.gcr.io/kube-proxy:v1.15.1
-sudo docker tag registry.aliyuncs.com/google_containers/kube-scheduler:v1.15.1 k8s.gcr.io/kube-scheduler:v1.15.1
-sudo docker tag registry.aliyuncs.com/google_containers/kube-apiserver:v1.15.1 k8s.gcr.io/kube-apiserver:v1.15.1
-sudo docker tag registry.aliyuncs.com/google_containers/kube-controller-manager:v1.15.1 k8s.gcr.io/kube-controller-manager:v1.15.1
-```
-
-```sh
-sudo docker save k8s.gcr.io/kube-proxy:v1.15.1 > kube-proxy.tar
-sudo docker save k8s.gcr.io/kube-scheduler:v1.15.1 > kube-scheduler.tar
-sudo docker save k8s.gcr.io/kube-apiserver:v1.15.1 > kube-apiserver.tar
-sudo docker save k8s.gcr.io/kube-controller-manager:v1.15.1 > kube-controller-manager.tar
-```
+或者从阿里云拉取第三方仓库
 
 ## kubeadm 
 
-检测能升级的版本
+检测能升级的版本(--disableexcludes=kubernetes 参数能查看全部版本，不然只列出最新的)
 
 `yum list --showduplicates kubeadm --disableexcludes=kubernetes`
 
-升级1.18.8版本
+升级1.19.5版本
 
-`yum install kubeadm-1.15.1-0 --disableexcludes=kubernetes`
-
-yum install kubeadm-1.18.0-0 --disableexcludes=kubernetes
+`yum install kubeadm-1.19.5-0 --disableexcludes=kubernetes`
 
 查看是否升级成功
 
 `kubeadm version`
 
-kubeadm upgrade plan
-`kubeadm upgrade apply v1.15.1`
-yum install -y kubelet-1.18.0-0 kubectl-1.18.0-0 --disableexcludes=kubernetes
-yum install -y kubelet-1.16.1-0 kubectl-1.16.1-0 --disableexcludes=kubernetes
-
-sudo systemctl daemon-reload
-sudo systemctl restart kubelet
-
-yum install -y kubelet-1.15.1-0 --disableexcludes=kubernetes
-
-yum install -y kubeadm-1.15.1-0 --disableexcludes=kubernetes
-yum install -y kubectl-1.15.1-0 --disableexcludes=kubernetes
-
-sudo yum install -y kubeadm-1.16.1-0 kubelet-1.16.1-0 --disableexcludes=kubernetes
-sudo yum install -y kubectl-1.16.1-0 --disableexcludes=kubernetes
-
-kubeadm upgrade node 
-
-unset http_proxy
-unset https_proxy
+查看升级计划 `kubeadm upgrade plan` (这个方式只能一个小版本的升级，如果需要跨很大的版本不方便)
+会显示能升级的版本，然后升级到这个版本 `kubeadm upgrade apply v1.15.1`
 
 ### 升级master节点
 
-kubeadm upgrade apply v1.15.1
-yum install -y kubelet-1.15.1-0 kubectl-1.15.1-0 --disableexcludes=kubernetes
-yum install -y kubelet-1.16.1-0 kubectl-1.16.1-0 --disableexcludes=kubernetes
+yum install -y kubeadm-1.18.0-0 kubelet-1.18.0-0 kubectl-1.18.0-0 --disableexcludes=kubernetes
+
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
 
-
 ### 升级worker节点
 
-yum install -y kubeadm-1.15.1-0 --disableexcludes=kubernetes
-yum install -y kubelet-1.15.1-0  --disableexcludes=kubernetes
+yum install -y kubelet-1.19.5-0 --disableexcludes=kubernetes
+
 
 ## kubeadm 从私有仓库拉取镜像
 
 我们可以在kubeadm执行命令的时候指定配置文件，配置文件中去指定的仓库拉取镜像，这样就避免了去拉取谷歌镜像
 
 `kubeadm config images list`
+
+## 删除和更新docker
+
+rpm -qa | grep docker – – 列出包含docker字段的软件的信息
+
+yum remove 列出的软件包，docker 包含 docker-ce  docker-cli  cli的版本就是我们通常说的docker版本
+
+`下面我们安装`
+
+yum install -y yum-utils device-mapper-persistent-data lvm2  # 依赖
+
+yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo # 加入源
+
+yum clean all
+
+yum makecache # 重建缓存完成
+
+yum repolist
+
+yum list docker-ce --showduplicates | sort –r # 列出安装包
+
+yum -y install docker-ce-18.09.5-3.el7 docker-ce-cli-19.03.6-3.el7 # 安装，由于k8s目前只支持到19.03，直接安装ce可能会安装最新的cli 20，所以我们指定 cli 的版本，这样linux就不会安装最新的依赖。或者通过 curl -fsSL https://get.docker.com/ | sh 脚本安装
+
+systemctl restart docker
+systemctl enable docker
 
 ## 自建CRD
 
@@ -242,99 +222,18 @@ https://www.cnblogs.com/rancherlabs/p/12330916.html
 
 高版本可用直接使用 kubeadm alpha certs renew all 更新，具体命令查看文档
 
-```
-apiVersion: v1
-data:
-  ClusterConfiguration: |
-    apiServer:
-      extraArgs:
-        authorization-mode: Node,RBAC
-      timeoutForControlPlane: 4m0s
-    apiVersion: kubeadm.k8s.io/v1beta2
-    certificatesDir: /etc/kubernetes/pki
-    clusterName: kubernetes
-    controllerManager: {}
-    dns:
-      type: CoreDNS
-    etcd:
-      local:
-        dataDir: /var/lib/etcd
-    imageRepository: registry.aliyuncs.com/google_containers
-    kind: ClusterConfiguration
-    kubernetesVersion: v1.16.1
-    networking:
-      dnsDomain: cluster.local
-      podSubnet: 10.244.0.0/16
-      serviceSubnet: 10.1.0.0/16
-    scheduler: {}
-  ClusterStatus: |
-    apiEndpoints:
-      cluster1:
-        advertiseAddress: 192.168.59.101
-        bindPort: 6443
-    apiVersion: kubeadm.k8s.io/v1beta2
-    kind: ClusterStatus
-kind: ConfigMap
-metadata:
-  creationTimestamp: "2019-09-23T15:50:48Z"
-  name: kubeadm-config
-  namespace: kube-system
-  resourceVersion: "226113"
-  selfLink: /api/v1/namespaces/kube-system/configmaps/kubeadm-config
-  uid: e978ab9b-de19-11e9-b73b-525400261060
-```
-
-```
-apiVersion: kubeadm.k8s.io/v1beta2
-bootstrapTokens:
-- groups:
-  - system:bootstrappers:kubeadm:default-node-token
-  token: abcdef.0123456789abcdef
-  ttl: 24h0m0s
-  usages:
-  - signing
-  - authentication
-kind: InitConfiguration
-localAPIEndpoint:
-  advertiseAddress: 1.2.3.4
-  bindPort: 6443
-nodeRegistration:
-  criSocket: /var/run/dockershim.sock
-  name: cluster1
-  taints:
-  - effect: NoSchedule
-    key: node-role.kubernetes.io/master
----
-apiServer:
-  timeoutForControlPlane: 4m0s
-apiVersion: kubeadm.k8s.io/v1beta2
-certificatesDir: /etc/kubernetes/pki
-clusterName: kubernetes
-controllerManager: {}
-dns:
-  type: CoreDNS
-etcd:
-  local:
-    dataDir: /var/lib/etcd
-imageRepository: k8s.gcr.io
-kind: ClusterConfiguration
-kubernetesVersion: v1.16.0
-networking:
-  dnsDomain: cluster.local
-  serviceSubnet: 10.96.0.0/12
-scheduler: {}
-```
 kubeadm reset
-kubeadm init --kubernetes-version=1.16.1 --apiserver-advertise-address=10.90.16.112 --pod-network-cidr=3.25.0.0/16
 
 rm -rf /var/lib/calico
 rm -rf /etc/cni/net.d
+
 systemctl restart kubelet
 
-kubeadm init --kubernetes-version=1.18.0 --image-repository registry.aliyuncs.com/google_containers --apiserver-advertise-address=10.90.16.112 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.10.0.0/16
+单master部署
 
-kubeadm init --kubernetes-version=1.18.0  
- --apiserver-advertise-address=192.168.56.101   
- --image-repository registry.aliyuncs.com/google_containers  
- --service-cidr=10.10.0.0/16 --pod-network-cidr=192.168.0.0/16
+kubeadm init --kubernetes-version=1.19.5 --image-repository registry.aliyuncs.com/google_containers --apiserver-advertise-address=10.90.16.112 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.10.0.0/16
+
+多master部署，需要指定控制平面的地址(必须，这样kubeadm会给出加入master的命令)
+
+kubeadm init --kubernetes-version=1.18.0 --apiserver-advertise-address=10.90.16.112 --control-plane-endpoint=10.90.16.112:6443 --image-repository registry.aliyuncs.com/google_containers --service-cidr=10.10.0.0/16 --pod-network-cidr=192.168.0.0/16 --upload-certs
 

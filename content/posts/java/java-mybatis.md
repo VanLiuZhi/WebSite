@@ -160,6 +160,35 @@ mybatis是在国内非常通用的MySQL，有很多延伸扩展
 
 ## mybatis-plus
 
+```xml
+<!--数据库依赖-->
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <scope>runtime</scope>
+</dependency>
+<dependency>
+    <groupId>org.mybatis.spring.boot</groupId>
+    <artifactId>mybatis-spring-boot-starter</artifactId>
+    <version>2.1.1</version>
+</dependency>
+<dependency>
+    <groupId>com.baomidou</groupId>
+    <artifactId>mybatis-plus-boot-starter</artifactId>
+    <version>3.3.1</version>
+</dependency>
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>druid</artifactId>
+    <version>1.1.21</version>
+</dependency>
+<dependency>
+    <groupId>com.github.pagehelper</groupId>
+    <artifactId>pagehelper-spring-boot-starter</artifactId>
+    <version>1.3.0</version>
+</dependency>
+```
+
 查询，使用lambda
 
 ```java
@@ -207,4 +236,27 @@ queryWrapper.lambda()
         .eq(ObjectUtil.isNotEmpty(template.getCode()), MsgTemplate::getCode, template.getCode())
         .eq(ObjectUtil.isNotEmpty(template.getType()), MsgTemplate::getType, template.getType())
         .orderByAsc(MsgTemplate::getSort); 
+```
+
+使用分页，引入分页依赖，注入分页拦截Bean
+
+```java
+@Bean
+public PaginationInterceptor paginationInterceptor() {
+    return new PaginationInterceptor();
+}
+```
+
+```java
+int current = 2;//当前页
+int row = 1;// 每页条数
+Page<EosPaasRedis> page = new Page<>(current, row);
+QueryWrapper<EosPaasRedis> wrapper = new QueryWrapper<>();
+// wrapper.like("password", "8");
+Page<EosPaasRedis> selectPage = eosPaasRedisDao.selectPage(page, wrapper);
+System.out.println("selectPage.getSize() = " + selectPage.getSize());
+System.out.println("selectPage.getTotal() = " + selectPage.getTotal());
+System.out.println("selectPage.getOrders() = " + selectPage.getOrders());
+System.out.println("selectPage.getCurrent() = " + selectPage.getCurrent());
+System.out.println("selectPage.getRecords() = " + selectPage.getRecords());
 ```

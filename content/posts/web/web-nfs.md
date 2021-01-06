@@ -306,6 +306,25 @@ volumeClaimTemplates:                   # 用于持久化的模板
           storage: 500M
 ```
 
+## StorageClass 配置
+
+PV的回收策略，可以从StorageClass继承来，对于NFS的provisioner，我们可以使用Retain和Delete的回收策略。特别注意，各个策略的支持看对应插件的控制器的实现
+
+下面是删除策略，也就是当我们删除PVC的时候，PV也会被删除，然后在共享存储路径上创建的文件夹也一起被删除
+
+对应NFS的provisioner，可以配置`archiveOnDelete`参数，这里我们设置是非存档。如果是true，那么文件夹不会被删除，二是在文件夹前面加上archive的前缀，做一个数据备份，也就是把数据存档了，之后的PV是不会去绑定这个文件夹的
+
+```yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: managed-nfs-storage
+provisioner: eos-nfs-storage # 这里的名称要和provisioner配置文件中的环境变量PROVISIONER_NAME保持一致 
+parameters:
+  archiveOnDelete: "false" # 是否存档
+reclaimPolicy: Delete
+```
+
 ## 参考
 
 https://blog.csdn.net/qq_38265137/article/details/83146421
@@ -315,3 +334,5 @@ https://blog.csdn.net/u011418530/article/details/89307874
 https://www.cnblogs.com/panwenbin-logs/p/12196286.html
 
 https://www.cnblogs.com/panwenbin-logs/p/12196286.html
+
+https://blog.csdn.net/huwh_/article/details/82052191

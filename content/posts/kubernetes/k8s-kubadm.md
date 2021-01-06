@@ -21,7 +21,7 @@ toc:
   auto: false
 ---
 
-
+  
 
 <!--more-->
 
@@ -76,3 +76,7 @@ https://www.jianshu.com/p/1e65610dd223
 https://kubernetes.io/zh/docs/setup/production-environment/tools/kubeadm/high-availability/
 
 https://zhangguanzhang.github.io/2019/11/24/kubeadm-base-use/#%E4%BA%8B%E5%89%8D%E5%87%86%E5%A4%87-%E6%AF%8F%E5%8F%B0%E6%9C%BA%E5%99%A8
+
+https://my.oschina.net/u/2306127/blog/3152592
+
+https://blog.csdn.net/xixihahalelehehe/article/details/108184267

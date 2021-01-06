@@ -64,3 +64,6 @@ WildFly，原名 JBoss AS(JBoss Application Server) 或者 JBoss，是一套应�
 Wildfly是一个开源的基于JavaEE的轻量级应用服务器，目前，最新版本是Wildfly 15，wildfly遵循LGPL2.1许可，意味着可以在任何商业应用中免费使用。WildFly是一个灵活的、轻量的、强大管理能力的应用程序服务器。Wildfly是一个管理EJB的容器和服务器，但JBoss核心服务不包括支持servlet/JSP的WEB容器，一般与Tomcat或Jetty绑定使用
 
 Vert.x是一个多语言Web框架，它支持Java，Kotlin，Scala，Ruby和Javascript支持的语言之间的共同功能。无论语言如何，Vert.x都在Java虚拟机（JVM）上运行。模块化和轻量级，它面向微服务开发。
+
+
+https://www.one-tab.com/page/A6b_d9a8SymLTapXMATmnA

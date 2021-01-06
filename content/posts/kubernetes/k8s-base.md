@@ -458,6 +458,8 @@ kubectl get pods --all-namespaces
 
 ## ResourceQuota(配额)
 
+资源配额的支持在很多 Kubernetes 版本中是默认开启的。当 API 服务器的 --enable-admission-plugins= 参数中包含 ResourceQuota 时，资源配额会被启用
+
 kubectl get resourcequota -n namespace
 kubectl describe resourcequota -n namespace
 
@@ -465,8 +467,8 @@ kubectl get ResourceQuota -A
 
 kubectl get resourcequota namespace --namespace=namespace --output=yaml
 
-当一个集群有分配ResourceQuota和对应的Namespace时，部署的pod需要声明request和limit，否正pod启动失败
-开启了resource quota时，用户创建pod，必须指定cpu、内存的 requests or limits ，否则创建失败。resourceQuota搭配 limitRanges口感更佳：limitRange可以配置创建Pod的默认limit/reques
+当一个集群有分配ResourceQuota和对应的Namespace时，部署的pod需要声明request和limit，否则pod启动失败
+开启了resource quota时，用户创建pod，必须指定cpu、内存的 requests or limits ，否则创建失败。resourceQuota搭配 limitRanges使用：limitRange可以配置创建Pod的默认limit/reques
 
 在一个多用户、多团队的k8s集群上，通常会遇到一个问题，如何在不同团队之间取得资源的公平，即，不会因为某个流氓团队占据了所有资源，从而导致其他团队无法使用k8s。
 k8s的解决方法是，通过RBAC将不同团队（or 项目）限制在不同的namespace下，通过resourceQuota来限制该namespace能够使用的资源
@@ -490,9 +492,36 @@ spec:
     services: "6"
 ```
 
+可以通过describe查看used，也就是当前配额的占用(只有pod声明了resources，并且不是无限制的，才会被配额控制和统计到，也就是pod resources 不要设置0，这种做法不合规范)
+
+
+场景举例
+
+1. 查看ResourceQuota的describe，used字段只会统计配置了资源限制的pod，也就是pod不声明resources，或者设置无限制这里used不会统计到
+一般会认为used会把当前命名空间的资源占用统计到，但是从设计的角度来说，直接拉取pod的resources是最容易的，具体使用到多少资源属于监控的范畴，减少了API的压力
+
+2. 已配置ResourceQuota，创建新的pod资源占用超过配额。此时pod无法创建，replicaset状态不满足。删除配额声明或修改上限，等会pod会继续创建
+
+3. pod已存在，没有配额声明，但是资源声明2Gi，此时创建配额声明限制是1Gi，配额可以创建，已存在的pod也不会受到影响。配额的used字段显示是2Gi
+
+4. 配额限制声明0，pod resources 声明是0，可以创建pod，假如pod声明是1Gi，不能创建(这种情况是比较坑的，最好避免)
+
+5. 配额的声明只管pod设置了resources，如果pod的resources是无限制，也就是都是0，那么不受配额的影响(也是要避免出现这种情况)
+
+6. 总之在使用了配额后，pod就必须声明资源限制，然后不要设置为0，这样才能更好的发挥ResourceQuota的作用，可以配合limitRange来对pod添加默认的resources
+
 参考
 
 https://blog.csdn.net/sinron_wu/article/details/106518824
+
+## CPU和内存单位
+
+在资源配置的时候用到
+
+CPU:  2,  200m
+memory:  100Mi  2Gi
+
+cpu 1000m  =  1 不带单位
 
 ## 设置namespace上下文
 
@@ -802,3 +831,141 @@ nameserver 10.96.0.10
 search eos-mid-public.svc.cluster.local svc.cluster.local cluster.local
 options ndots:5
 ```
+
+Node节点警告事件，如果宿主机配置了搜索域，会收到以下警告事件。宿主机的搜索域被注到容器中了。解决方法是删除这个search配置
+
+```
+Warning  CheckLimitsForResolvConf  6m20s (x70 over 20h)  kubelet, k8s-worker07  Resolv.conf file '/etc/resolv.conf' contains search line consisting of more than 3 domains!
+```
+
+## java k8s API Unknown apiVersionKind
+
+在本地开发是正常的，打成jar包后就会出现这个问题，主要是类没被装载到。ClassPath.getTopLevelClasses() returns empty list
+
+参考issues: https://github.com/kubernetes-client/java/issues/365
+
+解决方法
+
+```xml
+<plugin>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-maven-plugin</artifactId>
+    <configuration>
+        <!-- Enable io.kubernetes:client-java to find its model classes. -->
+        <requiresUnpack>
+            <dependency>
+                <groupId>io.kubernetes</groupId>
+                <artifactId>client-java-api</artifactId>
+            </dependency>
+        </requiresUnpack>
+    </configuration>
+</plugin>
+```
+
+## hostNetwork
+
+主机网络模式，可以让pod把端口直接绑定到宿主机
+
+通常配合 `dnsPolicy: ClusterFirstWithHostNet` 一起使用，不然dns解析可能会有问题，比如服务发现
+
+```yaml
+hostNetwork: true
+dnsPolicy: ClusterFirstWithHostNet
+```
+
+## kubeadm 重新生成token
+
+1. 先获取token
+
+- 列出token，可能会有找不到的情况
+kubeadm token list | awk -F" " '{print $1}' |tail -n 1
+
+- 如果过期可先执行此命令
+kubeadm token create #重新生成token
+
+2. 获取CA公钥的哈希值
+
+openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^ .* //'
+
+3. 从节点加入集群
+
+kubeadm join 192.168.40.xx:6443 --token token填这里 --discovery-token-ca-cert-hash sha256:哈希值填这里
+
+4. 节点加入集群的其它方式
+
+kubeadm token create --print-join-command  直接得到join命令的全部内容，适用于node节点加入
+
+kubeadm join 10.90.16.xx:6443 --token #token --discovery-token-ca-cert-hash #sha256
+
+集群加入新的master，需要先获取证书，执行下面命令
+
+旧版本： kubeadm init phase upload-certs --experimental-upload-certs
+新版本： kubeadm init phase upload-certs --upload-certs
+
+得到一个certificate-key，执行下面的命令
+
+旧版本： kubeadm join 10.90.16.xx:6443 --token #token --discovery-token-ca-cert-hash #sha256 --experimental-control-plane --certificate-key #certificate-key
+新版本： kubeadm join 10.90.16.xx:6443 --token #token --discovery-token-ca-cert-hash #sha256 --control-plane --certificate-key #certificate-key
+
+unknown flag: --experimental-upload-certs，新版本不再支持此参数了，变更为：--upload-certs
+
+## Pod状态
+
+Pending         API Server已经创建该Pod，但在Pod内还有一个或多个容器的镜像没有创建，包括正在下载镜像的过程
+Runnung         Pod内所有容器均已创建，且至少有一个容器处于运行状态、正在启动状态或正在重启状态
+Succeeded       Pod内所有容器均成功执行后退出，且不会再重启
+Failed          Pod内所有容器均已退出，但至少有一个容器退出为失败状态
+Unknown         由于某种原因无法获取该Pod的状态，可能由于网络通信不畅导致
+
+## Pod重启策略
+
+Pod的重启策略（RestartPolicy）应用与Pod内所有容器，并且仅在Pod所处的Node上由kubelet进行判断和重启操作
+当某个容器异常退出或者健康检查失败时，kubelet将根据RestartPolicy的设置来进行相应的操作
+
+Pod的重启策略包括：Always、OnFailure和Never，默认值为Always
+
+Always：当容器失效时，由kubelet自动重启该容器
+OnFailure：当容器终止运行且退出码不为0时，由kubelet自动重启该容器
+Never：不论容器运行状态如何，kubelet都不会重启该容器
+
+## readiness和liveness
+
+1. readiness和liveness的核心区别
+
+实际上readiness 和liveness 就如同字面意思
+readiness 就是意思是否可以访问，liveness就是是否存活
+如果一个readiness 为fail 的后果是把这个pod 的所有service 的endpoint里面的改pod ip 删掉，意思就这个pod对应的所有service都不会把请求转到这pod来了
+但是如果liveness 检查结果是fail就会直接kill container，当然如果你的restart policy 是always 会重启pod
+
+2. 什么样才叫readiness／liveness检测失败呢
+
+实际上k8s提供了3中检测手段
+
+- http get 返回200-400算成功，别的算失败
+- tcp socket 你指定的tcp端口打开，比如能telnet 上
+- cmd exec 在容器中执行一个命令 推出返回0 算成功
+
+每中方式都可以定义在readiness 或者liveness 中
+比如定义readiness 中http get 就是意思说如果我定义的这个path的http get 请求返回200-400以外的http code 就把我从所有有我的服务里面删了吧，如果定义在liveness里面就是把我kill 了
+
+3. 什么时候用readiness 什么时候用readiness
+
+比如如果一个http 服务你想一旦它访问有问题我就想重启容器。那你就定义个liveness 检测手段是http get。反之如果有问题我不想让它重启，只是想把它除名不要让请求到它这里来。就配置readiness
+
+`注意，liveness不会重启pod，pod是否会重启由你的restart policy 控制`
+
+## exec 多容器 情况
+
+使用 -c 指定 container
+
+`kubectl -n kong2 exec -it ingress-kong2-55bb4845b4-zzq46 -c proxy env | grep HOSTNAME`
+
+## 内存
+
+kubernetes上报的
+container_memory_working_set_bytes
+
+container_memory_working_set_bytes是取自cgroup memory.usage_in_bytes 与memory.stat total_inactive_file(静态不活跃的内存)
+
+memory.usage_in_bytes的统计数据是包含了所有的file cache的
+total_active_file和total_inactive_file都属于file cache的一部分，并且这两个数据并不是业务真正占用的内存，只是系统为了提高业务的访问IO的效率，将读写过的文件缓存在内存中，file cache并不会随着进程退出而释放，只会当容器销毁或者系统内存不足时才会由系统自动回收
