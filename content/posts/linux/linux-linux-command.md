@@ -567,8 +567,9 @@ LV（Logical Volume）- 逻辑卷
 
 2. fdisk /dev/vdb 创建 Linux LVM 分区，注意id 如果以前是8e就用8e
 
-执行命令`fdisk /dev/vdb` 然后按照提示操作，输入对应命令` n p 1 enter enter`（n 是开始分区，p分区...） 
-创建分区后，system 是 Linux，之后 `t  8e  w`  把 Linux 改成 Linux LVM
+执行命令`fdisk /dev/vdb` 然后按照提示操作，输入对应命令` n p 1 enter enter`（n 是开始分区，p分区...）
+上述命令执行完成后，重新回到输入命令界面
+此时创建分区完成，system 是 Linux，之后 `t  8e  w`  把 Linux 改成 Linux LVM
 
 3. 创建pv
 

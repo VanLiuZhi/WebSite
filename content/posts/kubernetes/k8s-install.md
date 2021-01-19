@@ -214,6 +214,43 @@ find /etc/kubespray -name '*.yml' | xargs -n1 -I{} sed -i 's/quay\.io/quay-mirro
 
 所有机器都要执行，这里使用的用户是普通用户，所以命名涉及权限的都要加sudo
 
+```
+echo "关闭缓存"
+swapoff -a
+# 编辑/etf/fstab
+sed -e '/swap/ s/^#*/#/' -i /etc/fstab
+mount -a
+# 查看输出
+free -h
+
+echo "关闭防火墙"
+# 关闭防火墙
+systemctl disable firewalld
+systemctl stop firewalld
+systemctl status firewalld
+
+echo "关闭防火墙成功"
+
+sleep 1
+
+cat << EOF > /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+
+sysctl --system
+
+sleep 1
+
+# 添加一条规则
+cat << EOF > /etc/sysctl.conf
+net.ipv4.ip_forward = 1
+EOF
+
+# 生效配置
+sysctl -p
+```
+
 1. 设置主机名hostname，管理节点设置主机名为 master，其它设置为node
 
 ```s

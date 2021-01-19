@@ -49,7 +49,7 @@ docker是使用go语言开发的应用容器引擎，docker 的开发商是 Dock
     docker network inspect <name>
 
     docker stats 容器ID  查看容器状态
-    docker logs 把容器运行后产生的输入都打印出来，不要轻易尝试
+    docker logs 把容器运行后产生的输入都打印出来，不要轻易尝试(如果日志太多会很耗时)
 
 ### 多个终端访问容器
 
@@ -288,6 +288,7 @@ CMD ["redis-server"]
 上述Dockerfile文件是基于基础镜像CentOS来制作Redis。
 
 `docker build -t centos:v2 .` 在文件所在目录下执行构建命令
+docker build -tag mysql:v1 -f MyDockerfile
 
 ### 指令
 
@@ -811,3 +812,18 @@ docker  run \
 nacos/nacos-server
 ```
 
+## docker修改es jvm
+
+可以通过如下方法修改
+
+[root@nova-92 logs]# find /var/lib/docker/ -name jvm.options
+
+/var/lib/docker/overlay2/f394fa1197ace3d592bb37738b95335fc722950c6a39167a0106586f0d2f2382/diff/etc/elasticsearch/jvm.options
+/var/lib/docker/overlay2/1bda3723143784e9db1324180f741dc2532addf41f9224248ade99964966cf18/merged/etc/elasticsearch/jvm.options
+
+然后 vim /var/lib/docker/overlay2/f394fa1197ace3d592bb37738b95335fc722950c6a39167a0106586f0d2f2382/diff/etc/elasticsearch/jvm.options
+
+修改里面
+
+-Xms4g
+-Xmx4g

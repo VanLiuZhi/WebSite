@@ -273,9 +273,9 @@ kubelet 将会对pod进行驱逐。
 
 `/var/lib/kubelet/kubeadm-flags.env`
 
-`KUBELET_KUBEADM_ARGS="--v=4 --cgroup-driver=systemd --network-plugin=cni --pod-infra-container-image=hub.eos.h3c.com/kubernetes/pause:3.1 --enforce-node-allocatable=pods,kube-reserved,system-reserved --kube-reserved-cgroup=/kubelet.service --system-reserved-cgroup=/system.slice --kube-reserved=cpu=500m,memory=500Mi,ephemeral-storage=1Gi --system-reserved=cpu=500m,memory=500Mi,ephemeral-storage=1Gi --eviction-soft=memory.available<10%,nodefs.available<10%,imagefs.available<10% --eviction-soft-grace-period=memory.available=2m,nodefs.available=2m,imagefs.available=2m --eviction-max-pod-grace-period=30"`
-
 KUBELET_KUBEADM_ARGS=--cgroup-driver=systemd --network-plugin=cni --pod-infra-container-image=hub.eos.h3c.com/kubernetes/pause:3.1
+
+`KUBELET_KUBEADM_ARGS="--v=4 --cgroup-driver=systemd --network-plugin=cni --pod-infra-container-image=hub.eos.h3c.com/kubernetes/pause:3.1 --enforce-node-allocatable=pods,kube-reserved,system-reserved --kube-reserved-cgroup=/kubelet.service --system-reserved-cgroup=/system.slice --kube-reserved=cpu=500m,memory=500Mi,ephemeral-storage=1Gi --system-reserved=cpu=500m,memory=500Mi,ephemeral-storage=1Gi --eviction-soft=memory.available<10%,nodefs.available<10%,imagefs.available<10% --eviction-soft-grace-period=memory.available=2m,nodefs.available=2m,imagefs.available=2m --eviction-max-pod-grace-period=30"`
 
 
 ```s
@@ -305,7 +305,7 @@ Scheduler会确保Node上所有的Pod Resource Request不超过NodeAllocatable�
 
 ## 细节部分
 
-1. 注意，因为kube-reserved设置的cpu其实最终是写到kube-reserved-cgroup下面的cpu shares。cpu shares，只有当集群的cpu跑满需要抢占时才会起作用，因此你会看到Node的cpu usage还是有可能跑到100%的，但是不要紧，kubelet等组件并没有收到影响，如果kubelet此时需要更多的cpu，那么它就能抢到更多的时间片，最多可以抢到kube-reserved设置的cpu nums
+1. 注意，因为kube-reserved设置的cpu其实最终是写到kube-reserved-cgroup下面的cpu shares。cpu shares，只有当集群的cpu跑满需要抢占时才会起作用，因此你会看到Node的cpu usage还是有可能跑到100%的，但是不要紧，kubelet等组件并没有受到影响，如果kubelet此时需要更多的cpu，那么它就能抢到更多的时间片，最多可以抢到kube-reserved设置的cpu nums
 
 2. 资源预留管理是需要计算Pod Resource Request。也就是Pod的资源限制必须要设置，而且不能设置为0
 

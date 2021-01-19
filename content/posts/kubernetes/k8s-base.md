@@ -969,3 +969,44 @@ container_memory_working_set_bytes是取自cgroup memory.usage_in_bytes 与memor
 
 memory.usage_in_bytes的统计数据是包含了所有的file cache的
 total_active_file和total_inactive_file都属于file cache的一部分，并且这两个数据并不是业务真正占用的内存，只是系统为了提高业务的访问IO的效率，将读写过的文件缓存在内存中，file cache并不会随着进程退出而释放，只会当容器销毁或者系统内存不足时才会由系统自动回收
+
+## patch 更新资源对象
+
+path是个很有用的操作，有些修改apply并不会重启容器，这导致修改失效，通常这种情况是我们操作不符合规范，应该使用path去更新资源对象
+
+`kubectl patch service istio-ingressgateway -n istio-system -p '{"spec":{"type":"NodePort"}}'`
+
+## 部署ELB
+
+私有云一般很少用到ELB，但是我们也可以去为集群做一个ELB，硬件负载均衡或者软件负载均衡都可以
+
+用nginx来实现，比如在部署istio的时候，LoadBalancer 处于pending状态的。`15021:31929/TCP,80:30186/TCP,443:32085/TCP,31400:32543/TCP,15443:30676/TCP` 需要暴露这几个端口
+
+找一台服务器部署nginx
+
+```json
+stream {
+    server {
+        listen 80;
+        proxy_pass 192.168.120.110:30186;
+    }
+    server {
+        listen 443;
+        proxy_pass 192.168.120.110:32085;
+    }
+    server {
+        listen 31400;
+        proxy_pass 192.168.120.110:32543;
+    }
+    server {
+        listen 15021;
+        proxy_pass 192.168.120.110:31929;
+    }
+    server {
+        listen 15443;
+        proxy_pass 192.168.120.110:30676;
+    }
+}
+```
+
+比如15021:31929/TCP，在nginx中，监听当前的15021，并将请求发到192.168.120.110:31929，这个是k8s的nodeport地址

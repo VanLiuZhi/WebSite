@@ -510,4 +510,44 @@ computed: {
 </el-row>
 ```
 
+## 通过vuex store来传递状态
+
+如果是几个不相关的组件，我们需要其中一个组件属性变化的时候，另一个组件响应对应的动作
+
+可以把这个属性存储到vuex中，这样改变这个值，其它组件设置watch即可
+
+## this.$options
+
+用来获取data之外的属性
+
+```js
+export default {
+  name: "Test",
+  data() {
+    return {
+         
+    };
+  },
+  //在data外面定义的属性和方法通过$options可以获取和调用
+  name: "zs",
+  age: 12,
+  haha() {
+    console.log("haha");
+  },
+  created() {  
+    console.log(this.$options.name);  // zs
+    console.log(this.$options.age);  //12
+    this.$options.haha();  // haha
+  
+  }
+```
+
+## mixin 混入
+
+可以把通用的东西抽象出来，比如某个方法或者属性，然后组件中声明mixin
+
+重复的属性以组件为主，钩子的执行时机以mixin优先
+
+全局mixin：mixin是需要在被混入的组件中声明的，可以声明一个全局mixin，这样各个组件不用声明也会自动混入（慎用这个特性）
+
 
