@@ -1,7 +1,7 @@
 ---
 weight: 1
-title: "Nexus"
-subtitle: "Nexus"
+title: "Nexus3"
+subtitle: "Nexus3"
 date: 2021-01-20T10:24:42+08:00
 lastmod: 2021-01-20T10:24:42+08:00
 draft: true
@@ -51,3 +51,17 @@ group : 组类型，实质作用是组合多个仓库为一个地址。
 更多参考
 
 https://www.cnblogs.com/sanduzxcvbnm/p/13099635.html
+
+## go proxy
+
+由于本地无法拉取镜像，所以我们使用proxy模式
+
+https://goproxy.cn  只需要配置这个即可，然后把go的环境变量设置一下
+
+## helm proxy
+
+使用proxy模式
+
+https://kubernetes.oss-cn-hangzhou.aliyuncs.com/charts
+
+helm repo add nexus 代理地址

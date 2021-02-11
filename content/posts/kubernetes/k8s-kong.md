@@ -241,6 +241,10 @@ function CorsHandler:access(conf)
 ... 省略
 ```
 
+## docker 启动 pgsql
+
+docker run  -di --name=eos_postgre1 -p 5433:5432 --restart=always -e TZ=Asia/Shanghai -e POSTGRES_USER=kong -e POSTGRES_PASSWORD=kong -e POSTGRES_DB=kong -v /data/docker/postgres5433/data:/var/lib/postgresql/data hub.eos.h3c.com/base/postgres:9.5 
+
 ## 参考
 
 官方文档

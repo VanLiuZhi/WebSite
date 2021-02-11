@@ -827,3 +827,42 @@ nacos/nacos-server
 
 -Xms4g
 -Xmx4g
+
+## 不使用缓存构建
+
+`docker build -t redis-trib:v3 --no-cache .`
+
+## 镜像构建使用软件源
+
+为 apt-get update 添加 -o Acquire::http::No-Cache=True
+
+```Dockerfile
+RUN sed -i "s@/archive.ubuntu.com/@/mirrors.163.com/@g" /etc/apt/sources.list \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get update --fix-missing -o Acquire::http::No-Cache=True
+```
+
+其它源
+
+```Dockerfile
+RUN sed -i "s@/archive.ubuntu.com/@/mirrors.tuna.tsinghua.edu.cn/@g" /etc/apt/sources.list \
+    && rm -Rf /var/lib/apt/lists/* \
+    && apt-get update
+
+RUN sed -i "s@/archive.ubuntu.com/@/mirrors.163.com/@g" /etc/apt/sources.list \
+    && rm -Rf /var/lib/apt/lists/* \
+    && apt-get update
+```
+
+## docker 权限
+
+privileged=true
+
+使用该参数，container内的root拥有真正的root权限
+否则，container内的root只是外部的一个普通用户权限
+
+在docker启动的时候，可以加入这个参数 `docker run --name mysql-test --privileged=true` 可以解决一些权限的问题
+
+
+
+

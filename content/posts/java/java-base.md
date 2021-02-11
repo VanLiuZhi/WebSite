@@ -1816,6 +1816,26 @@ public void sayHello(){
 | xjc.exe            | 主要用于根据XMLschema文件生成对应的Java类。 
 
 
-# JDK 官方版本特性参考
+## JDK 官方版本特性参考
 
 https://www.oracle.com/java/technologies/javase/8u191-relnotes.html
+
+## linux java
+
+tar -zxvf jdk-8u281-linux-x64.tar.gz
+mkdir -p /usr/java
+cp jdk1.8.0_281/ /usr/java/
+cd /usr/java/
+vim ~/.bashrc
+
+JAVA_HOME=/usr/java/jdk1.8.0_281
+CLASSPATH=$JAVA_HOME/lib/
+PATH=$PATH:$JAVA_HOME/bin
+export PATH JAVA_HOME CLASSPATH
+
+cd ~
+source .bashrc
+java -version、
+
+
+

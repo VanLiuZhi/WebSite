@@ -99,6 +99,10 @@ yum install -y kubeadm-1.18.0-0 kubelet-1.18.0-0 kubectl-1.18.0-0 --disableexclu
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
 
+可能旧版本安装会失败，可以试试加上--setopt=obsoletes=0参数，或者yum install -y kubelet-1.14.0-0，单独安装kubelet，一般这个的依赖容易出问题
+
+yum install -y kubeadm-1.14.0-0 kubectl-1.14.0-0 --disableexcludes=kubernetes --setopt=obsoletes=0
+
 ### 升级worker节点
 
 yum install -y kubelet-1.19.5-0 --disableexcludes=kubernetes
@@ -128,12 +132,26 @@ yum makecache # 重建缓存完成
 
 yum repolist
 
-yum list docker-ce --showduplicates | sort –r # 列出安装包
+yum list docker-ce --showduplicates | sort -r # 列出安装包
 
 yum -y install docker-ce-18.09.5-3.el7 docker-ce-cli-19.03.6-3.el7 # 安装，由于k8s目前只支持到19.03，直接安装ce可能会安装最新的cli 20，所以我们指定 cli 的版本，这样linux就不会安装最新的依赖。或者通过 curl -fsSL https://get.docker.com/ | sh 脚本安装
 
 systemctl restart docker
 systemctl enable docker
+
+#部分系统安装后未生成daemon.json，请执行以下命令
+mkdir -p /etc/docker
+touch /etc/docker/daemon.json 
+vim /etc/docker/daemon.json
+
+#配置仓库信息如下：
+{
+    "registry-mirrors": ["https://wnk1ohoc.mirror.aliyuncs.com"],
+    "insecure-registries":["hub.eos-ts.h3c.com","hub.eos.h3c.com"],
+    "exec-opts": ["native.cgroupdriver=systemd"]
+}
+
+#保存后重启docker
 
 ## 自建CRD
 

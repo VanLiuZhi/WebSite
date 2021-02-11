@@ -315,6 +315,8 @@ Scheduler会确保Node上所有的Pod Resource Request不超过NodeAllocatable�
 
 5. 通过启动参数配置的值会覆盖配置文件的设置
 
+6. 重启服务器后，/sys/fs 的配置重置了
+
 ## 参考
 
 https://my.oschina.net/jxcdwangtao/blog/1629059

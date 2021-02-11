@@ -1010,3 +1010,27 @@ stream {
 ```
 
 比如15021:31929/TCP，在nginx中，监听当前的15021，并将请求发到192.168.120.110:31929，这个是k8s的nodeport地址
+
+## 域名解析验证
+
+1. 启动一个busybox容器
+
+kubectl run -i --tty --image busybox dns-test --restart=Never --rm /bin/sh
+
+2. 执行nslookup命令
+
+nslookup redis-app-1.redis-service.default.svc.cluster.local
+
+可能会返回这个信息，也是代表正常的 Can't find redis-app-1.redis-service.default.svc.cluster.local: No answer
+
+## 删除节点
+
+删除这个node节点
+
+kubectl delete nodes node06
+
+然后在node06这个节点上执行如下命令：
+
+kubeadm reset 重置配置，根据输出提示，删除一些必要的文件即可
+
+

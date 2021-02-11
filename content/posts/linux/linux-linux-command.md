@@ -707,25 +707,6 @@ ls -al --block-size=m  以MB显示文件大小
 ls -al --block-size=k  kb显示
 ls -al --block-size=g  GB显示
 
-## 修改文件描述符大小
-
-修改系统最大值
-
-查看：``cat /proc/sys/fs/file-max`
-
-临时修改：`echo 6553500 > /proc/sys/fs/file-max`
-
-永久生效
-`vim /etc/sysctl.conf`
-`sysctl -p`
-
-修改单进程打开最大值
-
-cat /proc/sys/fs/nr_open
-echo 102400 > /proc/sys/fs/nr_open
-vim /etc/sysctl.conf
-sysctl -p
-
 ## EOF命令 
 
 追加
@@ -759,7 +740,9 @@ EOF
 du a.log -h
 du /test -h
 
--h 会自动转换单位，一般用这个就行了。然后可以跟目录，会统计出下面的所有文件来，或者直接指定文件
+du . -sh   当前目录文件大小，加上s会汇总统计结果
+
+-h 会自动转换单位，一般用这个就行了。然后可以根目录，会统计出下面的所有文件来，或者直接指定文件
 
 ## Linux capabilities
 
@@ -779,3 +762,16 @@ free 列显示还有多少物理内存和交换空间可用使用。
 shared 列显示被共享使用的物理内存大小。
 buff/cache 列显示被 buffer 和 cache 使用的物理内存大小。
 available 列显示还可以被应用程序使用的物理内存大小。
+
+## iptables
+
+iptables -L
+
+iptables -F && iptables -t nat -F && iptables -t mangle -F && iptables -X
+
+## 处理依赖问题
+
+yum install --downloadonly --downloaddir=/tmp kubelet-1.10.0-0
+我们可以用这个命令，把kubelet这个版本会用到的依赖包下载下来，这个命令不会安装软件
+
+rpm -ivh rpm文件 安装依赖
