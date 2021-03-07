@@ -975,6 +975,7 @@ total_active_file和total_inactive_file都属于file cache的一部分，并且�
 path是个很有用的操作，有些修改apply并不会重启容器，这导致修改失效，通常这种情况是我们操作不符合规范，应该使用path去更新资源对象
 
 `kubectl patch service istio-ingressgateway -n istio-system -p '{"spec":{"type":"NodePort"}}'`
+`kubectl -n istio-system patch deployment prometheus -p '{"spec":{"template":{"spec":{"nodeSelector":{"nodeType": "mid"}}}}}`
 
 ## 部署ELB
 

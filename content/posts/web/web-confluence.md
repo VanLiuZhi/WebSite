@@ -162,3 +162,7 @@ environment:
     liuzhi ys3415
 
     huawei-3com
+
+
+export JVM_MINIMUM_MEMORY="2096m"
+export JVM_MAXIMUM_MEMORY="8192m"

@@ -46,23 +46,26 @@ helm的软件包，采用tar格式，其中包含运行一个应用所需的所�
 helm template 仓库名/包名 > test.yaml 
 helm template ./文件夹名 > test.yaml 
 
+## helm 安装
 
+cd /opt && wget https://cloudnativeapphub.oss-cn-hangzhou.aliyuncs.com/helm-v3.0.0-alpha.1-linux-amd64.tar.gz
 
- 1001  cd /opt && wget https://cloudnativeapphub.oss-cn-hangzhou.aliyuncs.com/helm-v3.0.0-alpha.1-linux-amd64.tar.gz
+https://helm-v3.5.2-linux-amd64.tar.gz
 
-helm-v3.5.2-linux-amd64.tar.gz
+tar -xvf helm-v3.0.0-alpha.1-linux-amd64.tar.gz
+mv linux-amd64 helm
 
- 1002  tar -xvf helm-v3.0.0-alpha.1-linux-amd64.tar.gz
- 1003  mv linux-amd64 helm
- 1005  cd helm
- 1009  chown root.root helm -R
- 1011  cat > /etc/profile.d/helm.sh << EOF
+chown root.root helm -R
+
+cat > /etc/profile.d/helm.sh << EOF
 export PATH=$PATH:/opt/helm
- 1012  source /etc/profile.d/helm.sh
- 1013  helm
+EOF
 
+source /etc/profile.d/helm.sh
 
-[root@k8s-05 istio-1.9.0]# helm template ./manifests/charts/base --set global.jwtPolicy=first-party-jwt > istio-base.yaml
-[root@k8s-05 istio-1.9.0]#  helm template ./manifests/charts/istio-control/istio-discovery --set global.jwtPolicy=first-party-jwt > istio-control.yaml
-[root@k8s-05 istio-1.9.0]#  helm template ./manifests/charts/gateways/istio-ingress --set global.jwtPolicy=first-party-jwt > istio-ingress.yaml
-[root@k8s-05 istio-1.9.0]#  helm template ./manifests/charts/gateways/istio-egress --set global.jwtPolicy=first-party-jwt > istio-egress.yaml
+## istio 模板渲染
+
+helm template ./manifests/charts/base --set global.jwtPolicy=first-party-jwt --set global.hub="hub.eos.h3c.com/istio" > istio-base.yaml
+helm template ./manifests/charts/istio-control/istio-discovery --set global.jwtPolicy=first-party-jwt --set global.hub="hub.eos.h3c.com/istio" > istio-control.yaml
+helm template ./manifests/charts/gateways/istio-ingress --set global.jwtPolicy=first-party-jwt --set global.hub="hub.eos.h3c.com/istio" > istio-ingress.yaml
+helm template ./manifests/charts/gateways/istio-egress --set global.jwtPolicy=first-party-jwt --set global.hub="hub.eos.h3c.com/istio" > istio-egress.yaml

@@ -863,6 +863,13 @@ privileged=true
 
 在docker启动的时候，可以加入这个参数 `docker run --name mysql-test --privileged=true` 可以解决一些权限的问题
 
+## 以root进入shell
+
+有时候我们的容器启动的用户不是root，普通的方式进入容器权限不对，可以使用--user root
+
+docker exec -it --user root confluence /bin/bash
+
+也可以在启动容器的时候直接加上--user root让容器以root启动
 
 
 
