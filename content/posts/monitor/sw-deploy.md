@@ -167,7 +167,13 @@ agent本身的配置
 
 配置参考：https://github.com/VanLiuZhi/document-cn-translation-of-skywalking/blob/master/docs/zh/8.0.0/setup/service-agent/java-agent/README.md
 
+## 忽略采集端点
 
+1. 在agent下，将apache-skywalking-apm-bin-es7\agent\optional-plugins\apm-trace-ignore-plugin-6.6.0.jar复制到apache-skywalking-apm-bin-es7\agent\plugins
+
+2. apache-skywalking-apm-bin-es7\agent\config下面新建一个配置文件 apm-trace-ignore-plugin.config，内容为 trace.ignore_path=${SW_AGENT_TRACE_IGNORE_PATH:/healthy/**}
+
+这样就可以忽略 `healthy/**` 端点
 
 ## 配置文件
 

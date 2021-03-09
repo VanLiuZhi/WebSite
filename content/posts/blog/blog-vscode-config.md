@@ -36,3 +36,5 @@ Code→首选项(Preferences)→设置(settings)
 在搜索框中输入“enablePreview”
 
 把对应的选项取消即可
+
+`"workbench.editor.enablePreview": false,`

@@ -1,26 +1,24 @@
 ---
-weight: 1
+weight: 1101
 title: "K8s Helm"
-subtitle: "K8s Helm"
-date: 2021-01-06T15:45:09+08:00
-lastmod: 2021-01-06T15:45:09+08:00
-draft: true
+date: 2020-08-16T14:00:00+08:00
+lastmod: 2020-08-16T14:00:00+08:00
+draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "K8s Helm"
-# featuredImagePreview: "images/base-image.jpg"
-# featuredImage: "/images/base-image.jpg"
-# resources:
-# - name: "featured-image"
-#   src: "images/base-image.jpg"
+# featuredImagePreview: "images/Kubernetes/k8s.jpg"
+# featuredImage: "/images/Kubernetes/k8s.jpg"
+resources:
+- name: "base-image"
+  src: "/images/base-image.jpg"
 
-tags: 
-categories: 
+tags: [Cloud-Native, K8s]
+categories: [Kubernetes] 
 
 lightgallery: true
 
 toc:
-  # 自动展开目录
   auto: false
 ---
 

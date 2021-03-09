@@ -1,26 +1,24 @@
 ---
-weight: 1
+weight: 1102
 title: "K8s Kong"
-subtitle: "K8s Kong"
-date: 2020-12-17T09:48:48+08:00
-lastmod: 2020-12-17T09:48:48+08:00
-draft: true
+date: 2020-08-16T14:00:00+08:00
+lastmod: 2020-08-16T14:00:00+08:00
+draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "K8s Kong"
-# featuredImagePreview: "images/base-image.jpg"
-# featuredImage: "/images/base-image.jpg"
-# resources:
-# - name: "featured-image"
-#   src: "images/base-image.jpg"
+# featuredImagePreview: "images/Kubernetes/install.png"
+# featuredImage: "/images/Kubernetes/install.png"
+resources:
+- name: "base-image"
+  src: "/images/base-image.jpg"
 
-tags: 
-categories: 
+tags: [Linux, Docker, Note]
+categories: [Kubernetes] 
 
 lightgallery: true
 
 toc:
-  # 自动展开目录
   auto: false
 ---
 
@@ -119,6 +117,18 @@ hostNetwork: true
 hostNetwork的延伸：
 
 在使用hostNetwork模式，并且有端口需要绑定的时候，deployment的滚动更新会失效。猜测因为旧版本占用了宿主机端口，新的pod无法绑定导致一直处于pending状态
+
+### PORT_MAPS
+
+```yaml
+- name: KONG_PROXY_LISTEN
+  value: 0.0.0.0:80, 0.0.0.0:443 ssl http2
+- name: KONG_PORT_MAPS
+  value: 80:8000, 443:8443
+```
+
+kong提供了一个PORT_MAPS配置，由于我们需要绑定端口到宿主机，所以容器使用 hostNetwork 模式，我们就需要把容器网络端口映射到POD网络端口，也就是KONG_PORT_MAPS的配置
+80:8000, 443:8443 可以理解为 80和443是容器使用hostNetwork模式绑定到主机的端口，8000和8443是POD网络IP地址上绑定的端口
 
 ## ingress paths 访问404
 

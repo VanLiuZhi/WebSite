@@ -1,5 +1,5 @@
 ---
-weight: 1
+weight: 6600
 title: "Web Performance Test"
 subtitle: "Web Performance Test"
 date: 2021-01-26T17:14:26+08:00
@@ -14,8 +14,8 @@ description: "Web Performance Test"
 # - name: "featured-image"
 #   src: "images/base-image.jpg"
 
-tags: 
-categories: 
+tags: [Web, Note]
+categories: [Clear-Mind]
 
 lightgallery: true
 

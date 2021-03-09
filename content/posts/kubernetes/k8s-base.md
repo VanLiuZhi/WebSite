@@ -1035,3 +1035,11 @@ kubectl delete nodes node06
 kubeadm reset 重置配置，根据输出提示，删除一些必要的文件即可
 
 
+## 根据SA获取rolebinding
+
+比如查询 SA 是 dashboard-admin，会返回对应的 rolebinding
+
+```sh
+kubectl get rolebinding,clusterrolebinding 
+--all-namespaces -o jsonpath='{range .items[?(@.subjects[0].name=="dashboard-admin")]}[{.roleRef.kind},{.roleRef.name}]{end}' 
+```

@@ -1,30 +1,29 @@
 ---
-weight: 1
-title: "Network"
-subtitle: "Network"
-date: 2020-12-23T16:09:44+08:00
-lastmod: 2020-12-23T16:09:44+08:00
-draft: true
+weight: 3300
+title: "Network 网络"
+subtitle: "Network 网络"
+date: 2020-08-16T14:00:00+08:00
+lastmod: 2020-08-16T14:00:00+08:00
+draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
-description: "Network"
-# featuredImagePreview: "images/base-image.jpg"
-# featuredImage: "/images/base-image.jpg"
-# resources:
-# - name: "featured-image"
-#   src: "images/base-image.jpg"
+description: "Network 网络"
+# featuredImagePreview: "images/Kubernetes/k8s.jpg"
+# featuredImage: "/images/Kubernetes/k8s.jpg"
+resources:
+- name: "base-image"
+  src: "/images/base-image.jpg"
 
-tags: 
-categories: 
+tags: [Cloud-Native]
+categories: [Cloud-Native] 
 
 lightgallery: true
 
 toc:
-  # 自动展开目录
   auto: false
 ---
 
-
+网络知识
 
 <!--more-->
 

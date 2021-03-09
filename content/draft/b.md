@@ -22,6 +22,9 @@ Middleware(中间件) 9900
 
 other 10100
 
+Golang 10200
+
+
 标签:
 
 algorithm, note
@@ -47,6 +50,7 @@ Security Oauth2，实现一个微服务平台，提供网关，鉴权，限流�
 容器: Kubernetes,Docker
 
 持续集成: CICD,Jenkins
+持续集成（Continuous Integration）、持续交付（Continuous Delivery） 、持续部署（Continuous Deployment）
 
 服务网格: ServiceMesh
 

@@ -1,29 +1,27 @@
 ---
-weight: 1
+weight: 3300
 title: "Nexus3"
 subtitle: "Nexus3"
-date: 2021-01-20T10:24:42+08:00
-lastmod: 2021-01-20T10:24:42+08:00
-draft: true
+date: 2020-08-16T14:00:00+08:00
+lastmod: 2020-08-16T14:00:00+08:00
+draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
-description: "Nexus"
-# featuredImagePreview: "images/base-image.jpg"
-# featuredImage: "/images/base-image.jpg"
-# resources:
-# - name: "featured-image"
-#   src: "images/base-image.jpg"
+description: "Nexus3"
+# featuredImagePreview: "images/Kubernetes/k8s.jpg"
+# featuredImage: "/images/Kubernetes/k8s.jpg"
+resources:
+- name: "base-image"
+  src: "/images/base-image.jpg"
 
-tags: 
-categories: 
+tags: [Cloud-Native]
+categories: [Cloud-Native] 
 
 lightgallery: true
 
 toc:
-  # 自动展开目录
   auto: false
 ---
-
 
 
 <!--more-->

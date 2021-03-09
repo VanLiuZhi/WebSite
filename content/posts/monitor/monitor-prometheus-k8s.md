@@ -322,6 +322,37 @@ spec:
 
 增加这两个service后，prometheus采集任务就全部正常了
 
+### 补充
+
+在测试中发现，定义了service后，系统就有了对应的Endpoints，而且service端口怎么写，Endpoints就是什么端口
+
+一开始很奇怪，为什么Prometheus不帮我们创建这两个组件的监控，因为api-service都是默认有的，后来发现官方会对这两个组件做改动
+可能是Prometheus不好兼容吧，在1.19.6中，应该是1.15之后，这两个组件地址就发生了变化，修改了端口，并且也不会把数据绑定到 0.0.0.0 了，只支持https
+
+修改方式(因为版本不一样的原因，根据实际灵活调整就行了)：
+
+1. 统一监控采集用https协议
+
+prometheus-serviceMonitorKubeControllerManager.yaml 文件中
+
+```yaml
+port: https-metrics
+# 使用https协议，上面的port只是名称，对应即可
+scheme: https
+# 相当于忽略tls验证，不然我们需要证书
+tlsConfig:
+  insecureSkipVerify: true
+```
+
+2. 创建service
+
+创建service，根据实际设置端口
+
+3. 修改端口绑定
+
+master上修改组件的静态POD定义文件，把bind地址改成 0.0.0.0
+文件地址`/etc/kubernetes/manifests`
+
 ### 服务端口调整
 
 默认是通过内部端口访问的，官方通过代理来演示，生产部署的话一般就通过NodePort或者Ingress

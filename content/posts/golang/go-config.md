@@ -1,26 +1,22 @@
 ---
-weight: 1
+weight: 10200
 title: "Go Config"
-subtitle: "Go Config"
-date: 2021-01-20T11:00:05+08:00
-lastmod: 2021-01-20T11:00:05+08:00
-draft: true
+date: 2020-08-16T14:00:00+08:00
+lastmod: 2020-08-16T14:00:00+08:00
+draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "Go Config"
-# featuredImagePreview: "images/base-image.jpg"
-# featuredImage: "/images/base-image.jpg"
-# resources:
-# - name: "featured-image"
-#   src: "images/base-image.jpg"
+resources:
+- name: "base-image"
+  src: "/images/base-image.jpg"
 
-tags: 
-categories: 
+tags: [Golang]
+categories: [Golang]
 
 lightgallery: true
 
 toc:
-  # 自动展开目录
   auto: false
 ---
 

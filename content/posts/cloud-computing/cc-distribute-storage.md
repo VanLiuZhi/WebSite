@@ -1,26 +1,25 @@
 ---
-weight: 1
-title: "Distribute Storage"
-subtitle: "Distribute Storage"
-date: 2020-10-22T09:37:45+08:00
-lastmod: 2020-10-22T09:37:45+08:00
-draft: true
+weight: 3300
+title: "Distribute Storage 分布式存储"
+subtitle: "Distribute Storage 分布式存储"
+date: 2020-08-16T14:00:00+08:00
+lastmod: 2020-08-16T14:00:00+08:00
+draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
-description: "Distribute Storage"
-# featuredImagePreview: "images/base-image.jpg"
-# featuredImage: "/images/base-image.jpg"
-# resources:
-# - name: "featured-image"
-#   src: "images/base-image.jpg"
+description: "Distribute Storage 分布式存储"
+# featuredImagePreview: "images/Kubernetes/k8s.jpg"
+# featuredImage: "/images/Kubernetes/k8s.jpg"
+resources:
+- name: "base-image"
+  src: "/images/base-image.jpg"
 
-tags: 
-categories: 
+tags: [Cloud-Native]
+categories: [Cloud-Native] 
 
 lightgallery: true
 
 toc:
-  # 自动展开目录
   auto: false
 ---
 

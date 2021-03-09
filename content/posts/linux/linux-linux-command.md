@@ -769,9 +769,22 @@ iptables -L
 
 iptables -F && iptables -t nat -F && iptables -t mangle -F && iptables -X
 
+  945  iptables -S -t nat
+  980  iptables -F
+  981  iptables -L -n
+  982  iptables -L -n | grep jenk
+  983  iptables -S -t nat|grep 30810
+  984  iptables -S -t nat|grep 30811
+  986  iptables --flush
+  987  iptables -tnat --flush
+  989  iptables -P FORWARD ACCEPT
+
 ## 处理依赖问题
 
 yum install --downloadonly --downloaddir=/tmp kubelet-1.10.0-0
 我们可以用这个命令，把kubelet这个版本会用到的依赖包下载下来，这个命令不会安装软件
 
 rpm -ivh rpm文件 安装依赖
+
+
+

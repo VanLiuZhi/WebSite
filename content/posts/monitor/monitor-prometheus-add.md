@@ -1,26 +1,23 @@
 ---
-weight: 1
+weight: 3300
 title: "Kube Prometheus 新增监控项"
 subtitle: "Monitor Prometheus Add"
-date: 2020-12-02T10:17:49+08:00
-lastmod: 2020-12-02T10:17:49+08:00
-draft: true
+date: 2020-08-16T14:00:00+08:00
+lastmod: 2020-08-16T14:00:00+08:00
+draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
-description: "Monitor Prometheus Add"
-# featuredImagePreview: "images/base-image.jpg"
-# featuredImage: "/images/base-image.jpg"
-# resources:
-# - name: "featured-image"
-#   src: "images/base-image.jpg"
+description: "Kube Prometheus 新增监控项"
+resources:
+- name: "base-image"
+  src: "/images/base-image.jpg"
 
-tags: 
-categories: 
+tags: [Linux, Docker, Note, Cloud]
+categories: [Cloud-Native]
 
 lightgallery: true
 
 toc:
-  # 自动展开目录
   auto: false
 ---
 

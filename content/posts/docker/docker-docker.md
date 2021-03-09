@@ -787,7 +787,7 @@ service docker start
 启动所有的容器
 `sudo docker start $(docker ps -a | awk '{ print $1}' | tail -n +2)`
 
-总结：多测试一下，大部分都能改，记得要把容器停止了，然后停止docker服务，再去修改配置，这样才能生效
+总结：多测试一下，大部分都能改，记得要把容器停止了，然后停止docker服务，再去修改配置，这样才能生效(非规操作，容易翻车)
 
 ## 修改容器启动方式
 
@@ -816,17 +816,21 @@ nacos/nacos-server
 
 可以通过如下方法修改
 
-[root@nova-92 logs]# find /var/lib/docker/ -name jvm.options
+```s
+[root@liuzhi-11 logs]# find /var/lib/docker/ -name jvm.options
 
 /var/lib/docker/overlay2/f394fa1197ace3d592bb37738b95335fc722950c6a39167a0106586f0d2f2382/diff/etc/elasticsearch/jvm.options
 /var/lib/docker/overlay2/1bda3723143784e9db1324180f741dc2532addf41f9224248ade99964966cf18/merged/etc/elasticsearch/jvm.options
+```
 
-然后 vim /var/lib/docker/overlay2/f394fa1197ace3d592bb37738b95335fc722950c6a39167a0106586f0d2f2382/diff/etc/elasticsearch/jvm.options
+然后 `vim /var/lib/docker/overlay2/f394fa1197ace3d592bb37738b95335fc722950c6a39167a0106586f0d2f2382/diff/etc/elasticsearch/jvm.options`
 
 修改里面
 
 -Xms4g
 -Xmx4g
+
+这里只是演示，实际以容器对应的id为准
 
 ## 不使用缓存构建
 
