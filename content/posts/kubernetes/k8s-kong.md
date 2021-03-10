@@ -47,6 +47,14 @@ k8s 1.14 ingress 的 address 就算集群中没有ingress-controller，address�
 
 不指定注释将导致多个入口控制器声明相同的入口（多个kong-controller相同）。设置与任何现有入口控制器的类都不匹配的值将导致所有入口控制器忽略该入口。（kong-controller 的class 和 ingress不匹配，ingress被忽略）
 
+## kong https
+
+保证 443 端口正常开启，直接从konga添加证书即可
+如果是内网的，可以通过接入域控，把SSL授信加到每台电脑上
+可以百度找一下文件所在windows位置，默认就有一些 权威机构 的授信清单，通过域控接入我们自己签发的，就可以做到内网授信
+
+或者在浏览器加入，不过这只能影响自己电脑
+
 ## INGRESS_CLASS
 
 ingress-controller可以通过配置INGRESS_CLASS，当ingress的class和ingress-controller的class匹配上时，该ingress才会被纳入配置
