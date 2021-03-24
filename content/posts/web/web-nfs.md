@@ -321,8 +321,8 @@ metadata:
   name: managed-nfs-storage
 provisioner: eos-nfs-storage # 这里的名称要和provisioner配置文件中的环境变量PROVISIONER_NAME保持一致 
 parameters:
-  archiveOnDelete: "false" # 是否存档
-reclaimPolicy: Delete
+  archiveOnDelete: "false" # 是否存档，存档会在pvc对象删除的时候把文件归档保留下来
+reclaimPolicy: Delete # 回收策略，Retain 保留，Delete 删除
 ```
 
 ## 参考

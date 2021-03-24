@@ -786,5 +786,11 @@ yum install --downloadonly --downloaddir=/tmp kubelet-1.10.0-0
 
 rpm -ivh rpm文件 安装依赖
 
+## 删除软链接
 
+当我们删除软链接的时候一定要特别注意，如果是一个文件夹，rm netns 就行
+
+系统会提示：rm: remove symbolic link ‘netns’? 
+
+不要加 / 号，也就是 rm netns/ 会变成删文件夹，注意系统给出的提示
 

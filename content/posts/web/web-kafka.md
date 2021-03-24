@@ -309,3 +309,19 @@ if (!isTrustedPackage(classId)) {
 ```
 
 这个地方判断信任包
+
+## Web UI 工具
+
+```yaml
+version: "3"
+services:
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    restart: "no"
+    ports:
+      - "9002:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "10.90.15.xx:9092"
+```
+
+连接到kafka的9092端口即可

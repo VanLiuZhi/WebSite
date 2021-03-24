@@ -875,5 +875,28 @@ docker exec -it --user root confluence /bin/bash
 
 也可以在启动容器的时候直接加上--user root让容器以root启动
 
+## netstat 查看 容器连接
 
+netstat 默认情况下只能查看当前namespace下的连接，如果查看其它namespace的连接，需要先进入其它namespace
 
+可以尝试在容器执行 netstat 命令 `docker exec -it 9c4aad85-ca88-4025-a69d-e2331419c555 netstat -apnt`
+
+## 容器网络的命名空间
+
+ip netns list 发现找不到网络命名空间，在创建容器的情况下应该是有的
+
+原来ip netns 只能查看到 /var/run/netns 下面的网络命名空间。docker 不像openstack  neutron 会自动在这个文件创建命名空间名字，需要手动创建
+
+也就是docker没有创建所需的符号链接
+
+```s
+pid=$(docker inspect -f '{{.State.Pid}}' ${container_id})
+mkdir -p /var/run/netns/
+ln -sfT /proc/$pid/ns/net /var/run/netns/$container_id
+```
+
+ip netns ${container_id}检查容器的netns名称空间
+
+或者直接 ln -s /var/run/docker/netns  /var/run/netns  （这样不是很好用，命名空间是hash码，不推荐，另外不要执行这个命令2次，执行一次即可，会把所有容器创建的网络命名空间都加过来）
+
+更多参考： https://www.itranslater.com/qa/details/2583873860609246208

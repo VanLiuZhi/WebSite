@@ -1,6 +1,6 @@
 ---
 weight: 6600
-title: "Web Performance Test"
+title: "Web Performance Test(web 性能与压测)"
 subtitle: "Web Performance Test"
 date: 2021-01-26T17:14:26+08:00
 lastmod: 2021-01-26T17:14:26+08:00
@@ -32,7 +32,9 @@ toc:
 
 “Cannot assign requested address.”是由于linux分配的客户端连接端口用尽，无法建立socket连接所致，
 虽然socket正常关闭，但是端口不是立即释放，而是处于TIME_WAIT状态，默认等待60s后才释放
-是客户端的问题不是服务器端的问题。通过netstat，的确看到很多TIME_WAIT状态的连接
+通过netstat，的确看到很多TIME_WAIT状态的连接
+
+有人说这是客户端的问题不是服务端的问题，这句话是不准确的，只有主动关闭tcp连接都会进入这个状态（一般压测的时候是客户端主动释放，所以客户端需要处理这个问题）
 
 client端频繁建立连接，而端口释放较慢，导致建立新连接时无可用端口
 
@@ -47,7 +49,7 @@ sysctl -w net.ipv4.tcp_timestamps=1
 sysctl -w net.ipv4.tcp_tw_recycle=1
 ```
 
-net.ipv4.tcp_tw_recycle = 1 这个功能打开后，确实能减少TIME-WAIT状态，但是打开这个参数后，会导致大量的TCP连接建立错误，从而引起网站访问故障
+net.ipv4.tcp_tw_recycle = 1 这个功能打开后，确实能减少TIME-WAIT状态，但是打开这个参数后，在NAT网络下会导致大量的TCP连接建立错误，从而引起网站访问故障
 
 
 - 增加可用端口
@@ -75,6 +77,8 @@ windows也会报这个问题，大致描述是：An operation on a socket could 
 
 vim /etc/sysctl.conf
 
+`sysctl -p` 让配置生效（关于配置生效，执行这个命令即可，它的原理是把配置文件加载，可以指定要加载的文件，不指定使用默认文件）
+
 主要是和tcp相关的优化，这部分的优化是比较复杂的，通常情况下，修改端口范围满足压测机，修改连接数满足服务端即可开始压测
 
 内核的优化是比较复杂的配置
@@ -89,6 +93,9 @@ vim /etc/sysctl.conf
 按照提示去改对于的文件
 
 假如我们想重置内核配置，只要制空配置文件，然后重启就行(重启要谨慎)，因为一些写到内核的配置不会因为重新加载 /etc/sysctl.conf 被覆盖，需要显示的覆盖才行
+
+比如ip_local_port_range这个配置，我通过 -w 写入配置到内存了，此时我去改 /etc/sysctl.conf ，里面不改动ip_local_port_range，通过 -p 加载配置，不会覆盖
+ip_local_port_range，这些配置已经在内存里面了，所以要重置内核配置，比较实用的办法就是重置配置文件，然后重启服务器
 ```
 
 1. timewait的数量，默认是180000。(Deven:因此如果想把timewait降下了就要把tcp_max_tw_buckets值减小)
@@ -202,6 +209,48 @@ net.ipv4.ip_local_port_range = 1024 65000
 net.ipv4.ip_conntrack_max = 6553500
 ```
 
+```s
+# sysctl settings are defined through files in
+# /usr/lib/sysctl.d/, /run/sysctl.d/, and /etc/sysctl.d/.
+#
+# Vendors settings live in /usr/lib/sysctl.d/.
+# To override a whole file, create a new file with the same in
+# /etc/sysctl.d/ and put new settings there. To override
+# only specific settings, add a file with a lexically later
+# name in /etc/sysctl.d/ and put new settings there.
+#
+# For more information, see sysctl.conf(5) and sysctl.d(5).
+#Added the following lines derived from security policy
+net.core.wmem_max = 26214400
+net.core.rmem_max = 26214400
+net.ipv4.tcp_max_orphans = 262144
+net.ipv4.tcp_max_syn_backlog = 262144
+net.core.netdev_max_backlog = 262144
+net.core.somaxconn = 26214
+net.ipv4.conf.all.send_redirects = 0
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv4.conf.all.accept_source_route = 0
+net.ipv4.tcp_fin_timeout = 30
+net.ipv4.icmp_echo_ignore_broadcasts = 1
+net.ipv4.tcp_timestamps = 0
+net.ipv4.tcp_retries2 = 3
+net.ipv4.tcp_keepalive_time = 1200
+net.ipv4.tcp_keepalive_probes = 3
+net.ipv4.tcp_keepalive_intvl = 30
+net.ipv4.tcp_tw_reuse = 0
+net.ipv4.tcp_tw_recycle = 0
+fs.aio-max-nr = 1048576
+net.ipv4.route.gc_timeout = 100
+net.ipv4.ip_local_port_range = 1024 65000
+net.ipv4.tcp_syn_retries = 1
+net.ipv4.tcp_synack_retries = 1
+net.ipv4.tcp_rmem = 4096 87380 26214400
+net.ipv4.tcp_wmem = 4096 87380 26214400
+net.ipv4.tcp_mem = 10485760 13107200 15728640
+vm.swappiness = 0
+#End of additional configuration from security policy
+```
+
 ### TCP连接队列长度
 
 编辑文件 /etc/sysctl.conf，添加如下内容：
@@ -295,7 +344,7 @@ root hard core unlimited
 这里我们只要保证用户层级限制不大于系统层级限制就可以了，否则可能会出现无法通过SSH登录系统的问题。修改完毕执行如下命令：
 
 `sysctl -p`
-可以通过执行命令 ulimit -u查看是否修改成功
+可以通过执行命令 ulimit -u查看是否修改成功(不成功就重新打开一次会话)
 
 ```s
 配置含义
@@ -355,7 +404,7 @@ docker run --rm -d -p 8088:80 -v /home/nginx/www:/usr/share/nginx/html -v /home/
 
 docker run --rm -d -p 8088:80 -v /home/nginx/conf:/etc/nginx/conf.d --name nginx-test-web nginx
 
-docker run --rm -d -p 8088:80 --name nginx-test-web nginx
+docker run --rm -d -p 8088:80 -v /root/nginx.conf:/etc/nginx/nginx.conf --name nginx-test-web nginx
 
 ## wrk
 
@@ -407,6 +456,10 @@ Transfer/sec:      2.46MB (平均每秒流量2.46MB)
 https://www.cnblogs.com/quanxiaoha/p/10661650.html
 
 
+请求举例:
+
+wrk -t1 -c20000 -d60s --latency -H "Connection: keep-alive" http://api.kong/healthy
+wrk -t8 -c50000 -d60s --latency -H "Connection: keep-alive" http://10.90.15.xx:8088
 
 ## 几个配置文件和常用命令
 
@@ -500,6 +553,51 @@ server {
 
 `这是一个特别特别需要注意的地方，因为它和上面HTTP配置不是一个意思，一般我们设置1000偷个懒即可`
 
+### 再谈内核参数
+
+tcp_tw_reuse   仅在TCP套接字作为客户端，调用connect时起作用，数据结构不会收，只更改一下ip和port就继续使用，从time_wite进入ESTABLISHED
+
+tcp_tw_recycle  4.x内核版本之后这个参数已经被废弃了(https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4396e46187ca5070219b81773c4e65088dac50cc)，快速回收time_wait状态的连接 
+
+nr_open   单个进程打开文件句柄数上限
+file-max  指定了系统范围内所有进程可打开的文件句柄的数量限制(系统级别, kernel-level) 这个参数由系统自动计算，根据硬件资源得到，一般不需要手动修改
+
+ulimit -n 得到的是单进程，用户级别的，可以去修改，但是不能超过系统级别的设置(系统级别会有一个默认值)，如果非要超过，那先改系统级别的上限
+
+Linux Kernel有三个选项影响到KeepAlive的行为：
+1.net.ipv4.tcpkeepaliveintvl = 75
+2.net.ipv4.tcpkeepaliveprobes = 9
+3.net.ipv4.tcpkeepalivetime = 7200
+
+tcpkeepalivetime   表示TCP链接在多少秒之后没有数据报文传输启动探测报文；
+tcpkeepaliveintvl  单位是也秒,表示前一个探测报文和后一个探测报文之间的时间间隔；
+tcpkeepaliveprobes 表示探测的次数；
+
+TCP socket 也有三个选项和内核对应
+TCPKEEPCNT:   覆盖 tcpkeepaliveprobes
+TCPKEEPIDLE:  覆盖 tcpkeepalivetime
+TCPKEEPINTVL: 覆盖 tcpkeepalive_intvl
+
+
+http keep-alive与tcp keep-alive：
+
+http的是为了让一个连接活的更久一点，不至于发完数据后就马上关闭，因为发一次数据就建立一次tcp连接是非常消耗系统资源的，一般场景都会连续发请求的，
+所以不需要重复创建tcp，而且tcp连接关闭后，默认要2个MSL才能被回收，高并发下可能会导致端口耗尽
+
+tcp的是一种测活机制，假设双方发完数据了，也没有主动关闭，那么连接一直处于ESTABLISHED状态，也有可能一端宕机了，导致最后ack发出去没被收到，那么这个连接就会一直留着
+机制就是发送ack给对端，对端不应答，那么间隔时间后继续发，这个过程会重复一定的次数，次数到了还没收到应答，则关闭此tcp连接。如果测活过程中收到了，那么重置保活定时器
+
+做一个测试：
+启动一个web服务器，服务端发送请求，keep-alive 开启，看是否是只有一个连接建立
+（测试发生报文是否是复用连接的，比较好奇的是怎么保证连接被复用，有些应用会开多个线程处理请求的，是不是java tomcat这种都是一个连接一个请求无法复用连接）
+关闭keep-alive，请求数次，看是否是建立多个连接，看是否是一个请求完成连接就被关闭进入time_wite状态
+
 ### 参考
 
 https://skyao.gitbooks.io/learning-nginx/content/documentation/official_document.html
+
+java，分块传输举例：https://blog.csdn.net/xiaoduanayu/article/details/78386508
+
+## 待解决
+
+通过tcp四元组，加上时间戳的md5计算出序列号，防止序列号撞上了
