@@ -899,4 +899,7 @@ ip netns ${container_id}检查容器的netns名称空间
 
 或者直接 ln -s /var/run/docker/netns  /var/run/netns  （这样不是很好用，命名空间是hash码，不推荐，另外不要执行这个命令2次，执行一次即可，会把所有容器创建的网络命名空间都加过来）
 
+经测试，直接软链接，再add 一个ns会报错`RTNETLINK answers: Invalid argument`，似乎也不影响使用(删除了添加的ns也不不能解决报错)，强烈不建议使用此种方式
+不知道是触发了什么机制，不是由/var/run/netns创建的ns，需要把它链接过来，可能是/var/run/docker/netns和/proc/$pid/ns/net的文件有所不同
+
 更多参考： https://www.itranslater.com/qa/details/2583873860609246208

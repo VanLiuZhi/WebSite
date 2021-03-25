@@ -106,6 +106,7 @@ admin h3c!agl895AZ
 服务地址 xx.com  
 用户名 CN=liuzhi xx,OU=partnerusers,DC=xx,DC=xx,DC=com
 CN=liuzhi ys3415,OU=partnerusers,DC=h3c,DC=huawei-3com,DC=com
+CN=App EOS,OU=AppUsers,DC=h3c,DC=huawei-3com,DC=com
 基本DN(减少数据筛选范围) DC=xx,DC=xxcom,DC=com
 
 ADExplorer.exe 一个连接ldap的工具，可以查看数据
