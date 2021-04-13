@@ -101,7 +101,12 @@ sudo systemctl restart kubelet
 
 可能旧版本安装会失败，可以试试加上--setopt=obsoletes=0参数，或者yum install -y kubelet-1.14.0-0，单独安装kubelet，一般这个的依赖容易出问题
 
-yum install -y kubeadm-1.14.0-0 kubectl-1.14.0-0 --disableexcludes=kubernetes --setopt=obsoletes=0
+yum install -y kubeadm-1.14.0-0 kubelet-1.14.0-0 --disableexcludes=kubernetes --setopt=obsoletes=0
+
+`最终方案：`
+如果安装旧版本，先执行yum install -y kubelet-1.14.0-0，它会安装这个版本对应的依赖，然后yum install -y kubeadm-1.14.0-0 kubectl-1.14.0-0 --disableexcludes=kubernetes --setopt=obsoletes=0
+
+如果不指定kubectl，会默认装最高版本，worker节点影响不大
 
 ### 升级worker节点
 
@@ -152,6 +157,29 @@ vim /etc/docker/daemon.json
 }
 
 #保存后重启docker
+
+## container-selinux 依赖问题
+
+安装指定老的docker版本可能会出现这个问题
+
+```s
+container-selinux >= 2.9
+
+这个报错是container-selinux版本低或者是没安装的原因
+
+yum 安装container-selinux 一般的yum源又找不到这个包
+
+需要安装epel源 才能yum安装container-selinux
+
+然后在安装docker-ce就可以了。
+
+wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+
+yum install epel-release -y #阿里云上的epel源
+
+然后
+yum install container-selinux -y
+```
 
 ## 自建CRD
 

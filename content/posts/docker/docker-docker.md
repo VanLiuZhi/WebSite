@@ -832,6 +832,8 @@ nacos/nacos-server
 
 这里只是演示，实际以容器对应的id为准
 
+如果已经通过ES_JAVA_OPTS注入jvm配置了，那么就要找到es的启动脚本 vi /usr/local/bin/docker-entrypoint.sh 修改里面的 $ES_JAVA_OPTS 换成实际的，不读取环境变量
+
 ## 不使用缓存构建
 
 `docker build -t redis-trib:v3 --no-cache .`

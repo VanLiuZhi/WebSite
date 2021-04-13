@@ -325,3 +325,47 @@ services:
 ```
 
 连接到kafka的9092端口即可
+
+## docker部署kafka集群
+
+使用这个项目 git clone  https://github.com/wurstmeister/kafka-docker
+
+修改docker-compose.yml文件
+
+```yaml
+version: '2'
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+  kafka:
+    build: .
+    ports:
+      - "9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: {宿主机的ip}
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LOG_SEGMENT_BYTES: 1000000
+      KAFKA_LOG_ROLL_HOURS: 2
+      KAFKA_LOG_RETENTION_HOURS: 2
+      KAFKA_LOG_CLEANER_ENABLE: "true"
+      KAFKA_LOG_CLEANER_ENABLE: "true"
+      KAFKA_LOG_CLEANER_DELETE_RETENTION_MS: 3600000
+      KAFKA_LOG_INDEX_SIZE_MAX_BYTES: 1000000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+```
+
+然后启动，zk是使用镜像，kafka会构建一个镜像
+
+如果需要代理，则修改目录的Dockerfile文件
+
+通过ENV注入代理环境变量，Dockerfile的RUN指令需要wget下载文件，需要在RUN中export代理环境变量
+
+
+参考：https://www.cnblogs.com/qa-freeroad/p/13780405.html
+
+## 认证
+
+kafka 可以使用kerberos认证
