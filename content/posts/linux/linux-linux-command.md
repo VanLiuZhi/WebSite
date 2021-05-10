@@ -118,6 +118,10 @@ zip类型，需要安装解压工具 unzip
 
 unzip filename 先创建好目标目录，在里面解压，或者指定目录
 
+03-.tar.gz格式
+解压：tar zxvf FileName.tar.gz
+压缩：tar zcvf FileName.tar.gz DirName
+
 ## zip压缩文件夹
 
 zip -r fileName.zip 文件夹名

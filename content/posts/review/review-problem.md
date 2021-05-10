@@ -157,6 +157,8 @@ docker run -p 6377:6379 --name redis-5.7 \
 
 docker run --name redis -d redis:5.0.7-buster -p 6379:6379 --requirepass "qweEX123"
 
+docker run --name redis -d redis:5.0.7-buster -p 6379:6379 --requirepass "root23456"
+
 docker run --name redis-3.2 -p 6479:6379 -d redis:3.2 
 
 ### mysql 启动容器时区配置

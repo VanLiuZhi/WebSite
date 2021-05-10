@@ -39,3 +39,7 @@ Informer 只会调用 kubernets List/Watch 这两种API，初始化的时候通�
 k8s 的 API，通过watch维护缓存，没有resync机制，这要求etcd不会出错
 
 二级缓存：DeltaFIFO 用来存储 Watch API 返回的各种事件 ，LocalStore 只会被 Lister 的 List/Get 方法访问
+
+
+client-go 之 DeltaFIFO 实现原理: https://cloud.tencent.com/developer/article/1692474
+深入理解k8s中的informer机制: https://www.cnblogs.com/yangyuliufeng/p/13611126.html

@@ -167,3 +167,9 @@ environment:
 
 export JVM_MINIMUM_MEMORY="2096m"
 export JVM_MAXIMUM_MEMORY="8192m"
+
+推荐：进入容器修改这个文件 /opt/atlassian/confluence/bin/etenv.sh
+
+## confluence 启动问题
+
+重启容器后可能会出现confluence不断重启，多等一会就好了，或者再重启一下。日志没有什么特别的报错，这个问题也不是经常发生
