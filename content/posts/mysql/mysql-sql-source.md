@@ -174,3 +174,7 @@ from test
 where t.num = 1
 
 SELECT * FROM Test t1 WHERE not EXISTS(select 1 from Test t2 WHERE t2.value>t1.value and t1.name = t2.name);
+
+## 字符串数组判断
+
+SELECT * FROM users WHERE find_in_set('a, b, c', name)

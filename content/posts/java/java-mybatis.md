@@ -260,3 +260,62 @@ System.out.println("selectPage.getOrders() = " + selectPage.getOrders());
 System.out.println("selectPage.getCurrent() = " + selectPage.getCurrent());
 System.out.println("selectPage.getRecords() = " + selectPage.getRecords());
 ```
+
+## mybatis中的collection如何使用dao的传值
+
+针对一对多的查询场景，我们可以使用collection去组合数据，这里没有使用外连接，而是使用子查询的方式
+
+这里我们用模型和模型组的概念来举例，多个模型组合成一个模型组，所以是 `模型组` **一对多** `模型`
+
+关键点：
+
+1. `<collection property="models" column="{id=id,search_name=search_name}" select="selectModelList2">` property 定义的属性在
+ModelListResp中要有，并且是list的，然后我们通过column传值，column可以把当前表的字段或者通过DAO过来的值传递给子查询的 select
+这里就是把 ModelListResp 这个模型的 id 传递 给 `select id="selectModelList2" resultType="ModelEntity"` ，就可以在里面拿到id
+
+2. 在子查询中通过id过滤数据，差不多类似做到了外连接的 on 条件 (子查询相当于需要这条数据每次去数据库查询，比较耗费性能)
+
+3. 像一些DAO传递过来的参数，我们通过 `#{name} as search_name`的方式，把变量映射到结果集中，然后通过 collection 的 column 传递 过去
+`{id=id,search_name=search_name}` 的写法是数据库字段和模型字段的映射关系，第一个id是数据库的字段，第二id是模型的字段，都一样可以写成 id, search_name
+
+```xml
+<resultMap id="ListResultMap" type="ModelListResp">
+    <id column="id" jdbcType="VARCHAR" property="id"/>
+    <result column="name" jdbcType="VARCHAR" property="name"/>
+    <result column="code" jdbcType="VARCHAR" property="code"/>
+    <result column="color" jdbcType="VARCHAR" property="color"/>
+    <collection property="models" column="{id=id,search_name=search_name}" select="selectModelList2">
+    </collection>
+</resultMap>
+
+<select id="selectModelList" parameterType="string" resultMap="ListResultMap">
+    SELECT *,#{name} as search_name  FROM `model_group`
+</select>
+
+<select id="selectModelList2"
+        resultType="ModelEntity">
+    SELECT * FROM `model` WHERE model_group_id=#{id}
+    <if test="search_name !=null and search_name != ''">AND `name` like concat('%', #{search_name}, '%')</if>
+</select>
+```
+
+参考：
+
+https://blog.csdn.net/qq_39247788/article/details/105380249
+
+https://www.cnblogs.com/dreamyoung/p/12466656.html
+
+https://www.cnblogs.com/yshyee/p/12713679.html
+
+https://my.oschina.net/u/4466912/blog/4679187
+
+https://www.cnblogs.com/wllbdml/p/11455143.html
+
+https://my.oschina.net/u/2427561/blog/3138316
+
+## mybatis-plus 分页
+
+mapper List<User> getUserList(Page<User> page);
+
+接口：Page<User> getUserList(Page<User> page);
+实现：page.setRecords(this.baseMapper.getUserList(page));
