@@ -79,3 +79,14 @@ Map<Integer/*年级id*/, Map<Integer/*班级id*/, Double>> sumMap = list.stream(
 Map<Integer/*年级*/, Map<Integer/*班级*/, Long/*人数*/>> integerMap = list.stream().filter(t -> t.getScore() >= 60).collect(Collectors.groupingBy(t -> t.getGrade(), Collectors.groupingBy(t -> t.getClasses(), Collectors.counting())));
 
     System.out.println("取出一年级一班及格人数："+integerMap.get(1).get(1));
+
+
+分组补充：
+
+https://blog.csdn.net/daobuxinzi/article/details/100190366
+https://blog.csdn.net/u014231523/article/details/102535902
+
+一般分组都是 Map 的，但是可以对结果做处理，比如重载集合收集器，使用自定义的结果集
+
+11. collectingAndThen --根据对象的属性进行去重操作
+先进行结果集的收集，然后将收集到的结果集进行下一步的处理，这里做个记录，具体使用参考文档
