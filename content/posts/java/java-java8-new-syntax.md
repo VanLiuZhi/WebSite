@@ -6,7 +6,7 @@ lastmod: 2020-08-16T14:00:00+08:00
 draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
-description: "Java8 new语法特性"
+description: "Java新语法特性，技巧特性总结"
 resources:
 - name: "base-image"
   src: "/images/base-image.jpg"
@@ -20,7 +20,7 @@ toc:
   auto: false
 ---
 
-Java8 new语法特性
+Java新语法特性，技巧特性总结
 
 ![image](/images/Java/Java-base.jpg)
 
@@ -304,10 +304,29 @@ String name = Optional.ofNullable(UserUtil.getUserByUserId(1))
 
 通过观察源码，我们可以看到，很多为空的都会返回empty，这让各个操作都能够互相调用
 
-## 总结
+### 总结
 
 Optional是一个比较简单的类，推荐直接阅读源码，通过简单的包装，很优雅的解决的空指针问题，以前谷歌Guava库就实现了，后面Java8正式把规范加到 `java.util.Optional` 类中
 
 PS: 如果你看源码有压力，快去补习一下lambda，函数式编程
 
 另外，上面的做法是对于程序内的，如果是web开发，参数校验，请使用Hibernate-Validator即可，作为一个合格的后端，我不会让前端挑刺的
+
+## 排序比较
+
+以流处理的排序举例：`Stream<T> sorted(Comparator<? super T> comparator);`
+
+参数是 `Comparator<? super T> comparator`，通常情况下：`sorted(Comparator.comparing(User:age))`
+
+但是可能我们对象是空的，或者排序的属性是空的，针对这种问题可以做以下处理：
+
+`Comparator.nullsLast` 包裹一层，处理对象是空的，然后通过 `Optional.ofNullable` 去保证属性null的时候返回特点值，实现这两点我们就可以处理空指针异常
+
+使用举例
+
+```java
+// 推荐
+sorted(Comparator.nullsLast(Comparator.comparing(m -> Optional.ofNullable(m.getSort()).orElse(Integer.MAX_VALUE))))
+
+sorted(Comparator.nullsLast(Comparator.comparing(Object::getInt, Comparator.nullsFirst(Integer::compare)))))
+```
