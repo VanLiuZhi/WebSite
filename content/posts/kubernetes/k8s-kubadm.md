@@ -4,7 +4,7 @@ title: "K8s Kubadm"
 subtitle: "K8s Kubadm"
 date: 2020-09-21T11:13:46+08:00
 lastmod: 2020-09-21T11:13:46+08:00
-draft: true
+draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "K8s Kubadm"
@@ -68,6 +68,28 @@ cd /etc/kubernetes/manifests
 在 token 生成之后，kubeadm 会将 ca.crt 等 Master 节点的重要信息，通过 ConfigMap 的方式保存在 Etcd 当中，供后续部署 Node 节点使用。这个 ConfigMap 的名字是 cluster-info。
 
 kubeadm init 的最后一步，就是安装默认插件。Kubernetes 默认 kube-proxy 和 DNS 这两个插件是必须安装的。它们分别用来提供整个集群的服务发现和 DNS 功能。其实，这两个插件也只是两个容器镜像而已，所以 kubeadm 只要用 Kubernetes 客户端创建两个 Pod 就可以了。
+
+## 异常处理
+
+记录kubeadm init异常问题
+
+### WARNING IsDockerSystemdCheck
+
+这是docker和k8s cgroup驱动不一致导致的
+
+```
+/etc/docker/daemon.json 中修改配置
+
+{
+  "exec-opts": ["native.cgroupdriver=systemd"]
+}
+```
+
+然后重启服务 systemctl restart docker
+
+### WARNING FileExisting-socat
+
+socat是一个网络工具， k8s 使用它来进行 pod 的数据交互，出现这个问题直接安装socat即可 yum install socat
 
 ## 参考
 

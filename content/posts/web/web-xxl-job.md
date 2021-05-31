@@ -4,7 +4,7 @@ title: "Web Xxl Job"
 subtitle: "Web Xxl Job"
 date: 2020-09-21T10:39:41+08:00
 lastmod: 2020-09-21T10:39:41+08:00
-draft: true
+draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "Web Xxl Job"

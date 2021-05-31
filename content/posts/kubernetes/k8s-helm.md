@@ -61,6 +61,10 @@ EOF
 
 source /etc/profile.d/helm.sh
 
+初始化替换默认仓库，直接执行init可能无法访问默认仓库导致失败
+
+helm3 init  --stable-repo-url https://kubernetes.oss-cn-hangzhou.aliyuncs.com/charts
+
 ## istio 模板渲染
 
 helm template ./manifests/charts/base --set global.jwtPolicy=first-party-jwt --set global.hub="hub.eos.h3c.com/istio" > istio-base.yaml

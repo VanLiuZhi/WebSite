@@ -283,3 +283,18 @@ kubeadm init --kubernetes-version=1.19.5 --image-repository registry.aliyuncs.co
 
 kubeadm init --kubernetes-version=1.18.0 --apiserver-advertise-address=10.90.16.112 --control-plane-endpoint=10.90.16.112:6443 --image-repository registry.aliyuncs.com/google_containers --service-cidr=10.10.0.0/16 --pod-network-cidr=192.168.0.0/16 --upload-certs
 
+sealer run kubernetes:v1.18.14 --masters 192.168.69.101 --nodes 192.168.69.102,192.168.69.103 --passwd vagrant
+
+sealos init --passwd 'vagrant' --master 192.168.69.101 --node 192.168.69.102 --node 192.168.69.103 --pkg-url /root/kube1.20.0.tar.gz --version v1.20.0
+
+value: interface=eth.*|en.*|em.*
+
+192.168.69.101 k8s-cluster1
+192.168.69.102 k8s-cluster2
+192.168.69.103 k8s-cluster3
+
+
+helm3 repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
+$ helm3 install nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+    --set nfs.server=192.168.69.101 \
+    --set nfs.path=/home/k8s

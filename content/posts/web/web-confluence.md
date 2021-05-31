@@ -4,7 +4,7 @@ title: "Web Confluence"
 subtitle: "Web Confluence"
 date: 2020-09-21T10:41:18+08:00
 lastmod: 2020-09-21T10:41:18+08:00
-draft: true
+draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "Web Confluence"

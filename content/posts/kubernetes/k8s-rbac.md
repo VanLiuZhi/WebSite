@@ -4,7 +4,7 @@ title: "K8s Rbac"
 subtitle: "K8s Rbac"
 date: 2020-09-24T09:57:54+08:00
 lastmod: 2020-09-24T09:57:54+08:00
-draft: true
+draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "K8s Rbac"

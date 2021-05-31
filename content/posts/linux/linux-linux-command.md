@@ -783,6 +783,12 @@ iptables -F && iptables -t nat -F && iptables -t mangle -F && iptables -X
   987  iptables -tnat --flush
   989  iptables -P FORWARD ACCEPT
 
+iptables -F (flush 清除所有的已定规则)
+
+iptables -X (delete 删除所有用户“自定义”的链（tables）)
+
+iptables -Z （zero 将所有的chain的计数与流量统计都归零）
+
 ## 处理依赖问题
 
 yum install --downloadonly --downloaddir=/tmp kubelet-1.10.0-0
@@ -798,3 +804,37 @@ rpm -ivh rpm文件 安装依赖
 
 不要加 / 号，也就是 rm netns/ 会变成删文件夹，注意系统给出的提示
 
+## ssh 连接 Permission denied 处理
+
+报错 Permission denied (publickey,gssapi-keyex,gssapi-with-mic) 解决方法
+
+通常我们通过 ssh root@xxx 去连接服务器，出现这种问题一般是配置不对
+
+1. 检查公钥
+
+目录 ~/.ssh/authorized_keys 下应该存储着公钥，如果没有，执行命令 ssh-keygen 一路回车，把生成的id_rsa.pub的内容copy到authorized_keys中
+另外公钥的内容也注意检查一下，至少格式要是对的
+
+2. 调整配置
+
+打开配置文件 /etc/ssh/sshd_config 检查一下配置有没有配置
+
+PubkeyAuthentication yes
+PasswordAuthentication yes
+PermitRootLogin yes
+UsePAM yes
+
+AuthorizedKeysFile .ssh/authorized_keys
+
+如果需要root登录 PermitRootLogin yes 要打开
+
+配置检查无误，systemctl restart sshd.service 重启服务
+
+## /etc/systemd/system 和 /usr/lib/systemd/system 的区别
+
+每一个 Unit（服务等） 都有一个配置文件，告诉 Systemd 怎么启动这个 Unit
+Systemd 默认从目录/etc/systemd/system/读取配置文件
+但是，里面存放的大部分文件都是符号链接，指向目录/usr/lib/systemd/system/，
+真正的配置文件存放在那个目录。systemctl enable 命令用于在上面两个目录之间，建立符号链接关系
+
+参考： http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html

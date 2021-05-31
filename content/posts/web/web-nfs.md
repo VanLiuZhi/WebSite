@@ -4,7 +4,7 @@ title: "Web Nfs"
 subtitle: "Web Nfs"
 date: 2020-11-03T09:49:50+08:00
 lastmod: 2020-11-03T09:49:50+08:00
-draft: true
+draft: false
 author: "VanLiuZhi"
 authorLink: "https://www.liuzhidream.com"
 description: "Web Nfs"
