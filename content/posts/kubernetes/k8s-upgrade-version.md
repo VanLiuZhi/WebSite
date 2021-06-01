@@ -298,3 +298,13 @@ helm3 repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io
 $ helm3 install nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
     --set nfs.server=192.168.69.101 \
     --set nfs.path=/home/k8s
+
+k8s.gcr.io/sig-storage/nfs-subdir-external-provisioner:v4.0.2
+k8s.gcr.io/sig-storage/nfs-subdir-external-provisioner:v4.0.2
+
+kubectl patch storageclass nfs-client -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+
+
+kubectl apply -f https://github.com/kubesphere/ks-installer/releases/download/v3.1.0/kubesphere-installer.yaml
+   
+kubectl apply -f https://github.com/kubesphere/ks-installer/releases/download/v3.1.0/cluster-configuration.yaml

@@ -325,6 +325,11 @@ parameters:
 reclaimPolicy: Delete # 回收策略，Retain 保留，Delete 删除
 ```
 
+## 注意
+
+为保证k8s创建目录成功，nfs对应存储目录权限最好设置为 777
+权限不对的，pvc创建会失败，改目录权限后，等会就可以自动恢复正常了
+
 ## 参考
 
 https://blog.csdn.net/qq_38265137/article/details/83146421
