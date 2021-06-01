@@ -127,3 +127,8 @@ ls -l
 
 该目录提供了git的各个钩子的脚步案例。
 
+## 问题处理
+
+1. Idea显示Move or commit them before merge 
+执行 `git fetch --all && git reset --hard origin/master && git pull` 命令，注意这个命令是用远程版本强制覆盖本地版本，如果本地有未提交的代码，会被覆盖掉
+

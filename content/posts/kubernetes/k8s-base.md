@@ -1063,3 +1063,15 @@ kubectl drain itk8s-mid01 --delete-local-data --ignore-daemonsets --force
 解决：加参数 --force --grace-period=0，grace-period表示过渡存活期，默认30s，在删除POD之前允许POD慢慢终止其上的容器进程，从而优雅退出，0表示立即终止POD
 
 `kubectl delete po <your-pod-name> -n <name-space> --force --grace-period=0`
+
+## 设置默认的StorageClass
+
+并不是默认命名空间下的sc就是默认sc，需要我们配置一下
+
+选择一个sc，标记为默认
+
+`kubectl patch storageclass <your-class-name> -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'`
+
+如果用false则取消默认，只能有一个sc被标记为默认。如果它们中有两个或多个被标记为默认，Kubernetes 将忽略这个注解， 也就是它将表现为没有默认 StorageClass
+
+我们get sc的时候，可以看到 gold (default) 这种输出则是配置了默认sc
