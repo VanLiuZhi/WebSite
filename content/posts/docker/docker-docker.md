@@ -905,3 +905,28 @@ ip netns ${container_id}检查容器的netns名称空间
 不知道是触发了什么机制，不是由/var/run/netns创建的ns，需要把它链接过来，可能是/var/run/docker/netns和/proc/$pid/ns/net的文件有所不同
 
 更多参考： https://www.itranslater.com/qa/details/2583873860609246208
+
+## Containerd
+
+更换Containerd后，常用的docker命令也不再使用，取而代之的分别是crictl和ctr两个命令客户端
+
+crictl是遵循CRI接口规范的一个命令行工具，通常用它来检查和管理kubelet节点上的容器运行时和镜像
+ctr是containerd的一个客户端工具
+
+和镜像相关的操作，都使用 ctr images
+
+比如 docker images  --  ctr images ls   docker tag  --  ctr images tag
+
+由于Containerd也有namespaces的概念，对于上层编排系统的支持，
+主要区分了3个命名空间分别是k8s.io、moby和default，crictl操作的均在k8s.io命名空间完成
+如查看镜像列表就需要加上-n参数  ctr -n k8s.io images list
+
+其它操作用 crictl
+
+docker ps  --  crictl ps
+docker logs  --  crictl logs
+
+参考：https://zhuanlan.zhihu.com/p/341921409
+
+
+
