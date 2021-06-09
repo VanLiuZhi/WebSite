@@ -96,8 +96,12 @@ EOF
 
 yum install -y kubeadm-1.18.0-0 kubelet-1.18.0-0 kubectl-1.18.0-0 --disableexcludes=kubernetes
 
+yum install -y kubeadm-1.19.6-0 kubelet-1.19.6-0 kubectl-1.19.6-0 --disableexcludes=kubernetes
+
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
+
+systemctl enable kubelet
 
 可能旧版本安装会失败，可以试试加上--setopt=obsoletes=0参数，或者yum install -y kubelet-1.14.0-0，单独安装kubelet，一般这个的依赖容易出问题
 
@@ -282,6 +286,8 @@ kubeadm init --kubernetes-version=1.19.5 --image-repository registry.aliyuncs.co
 多master部署，需要指定控制平面的地址(必须，这样kubeadm会给出加入master的命令)
 
 kubeadm init --kubernetes-version=1.18.0 --apiserver-advertise-address=10.90.16.112 --control-plane-endpoint=10.90.16.112:6443 --image-repository registry.aliyuncs.com/google_containers --service-cidr=10.10.0.0/16 --pod-network-cidr=192.168.0.0/16 --upload-certs
+
+kubeadm init --kubernetes-version=1.19.6 --apiserver-advertise-address=10.90.16.112 --control-plane-endpoint=10.90.16.112:6443 --image-repository hub.eos.h3c.com/kubernetes --service-cidr=10.10.0.0/16 --pod-network-cidr=192.168.0.0/16 --upload-certs
 
 sealer run kubernetes:v1.18.14 --masters 192.168.69.101 --nodes 192.168.69.102,192.168.69.103 --passwd vagrant
 
