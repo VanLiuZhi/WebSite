@@ -124,6 +124,8 @@ Export list for 10.90.15.xx:
 `systemctl enable rpcbind.service`
 `systemctl start rpcbind.service`
 
+systemctl enable rpcbind.service && systemctl start rpcbind.service
+
 `showmount -e 10.90.15.xx` 看看能不能访问到服务端
 
 创建目录并挂载

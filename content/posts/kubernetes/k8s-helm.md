@@ -44,15 +44,14 @@ helm的软件包，采用tar格式，其中包含运行一个应用所需的所�
 helm template 仓库名/包名 > test.yaml 
 helm template ./文件夹名 > test.yaml 
 
-## helm 安装
+## helm3 安装
+
+下载文件 https://helm-v3.5.2-linux-amd64.tar.gz copy 编译后的二进制文件
 
 cd /opt && wget https://cloudnativeapphub.oss-cn-hangzhou.aliyuncs.com/helm-v3.0.0-alpha.1-linux-amd64.tar.gz
 
-https://helm-v3.5.2-linux-amd64.tar.gz
-
 tar -xvf helm-v3.0.0-alpha.1-linux-amd64.tar.gz
 mv linux-amd64 helm
-
 chown root.root helm -R
 
 cat > /etc/profile.d/helm.sh << EOF
@@ -71,3 +70,9 @@ helm template ./manifests/charts/base --set global.jwtPolicy=first-party-jwt --s
 helm template ./manifests/charts/istio-control/istio-discovery --set global.jwtPolicy=first-party-jwt --set global.hub="hub.eos.h3c.com/istio" > istio-control.yaml
 helm template ./manifests/charts/gateways/istio-ingress --set global.jwtPolicy=first-party-jwt --set global.hub="hub.eos.h3c.com/istio" > istio-ingress.yaml
 helm template ./manifests/charts/gateways/istio-egress --set global.jwtPolicy=first-party-jwt --set global.hub="hub.eos.h3c.com/istio" > istio-egress.yaml
+
+## 安装nfs-provisioner
+
+helm install nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+    --set nfs.server=10.90.16.112 \
+    --set nfs.path=/home/k8s
