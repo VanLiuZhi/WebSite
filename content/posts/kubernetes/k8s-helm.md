@@ -60,9 +60,9 @@ EOF
 
 source /etc/profile.d/helm.sh
 
-初始化替换默认仓库，直接执行init可能无法访问默认仓库导致失败
+初始化替换默认仓库，直接执行init可能无法访问默认仓库导致失败（内网环境，先用nexus代理阿里云的默认参考，关闭服务器代理，执行init即可）
 
-helm3 init  --stable-repo-url https://kubernetes.oss-cn-hangzhou.aliyuncs.com/charts
+helm3 init --stable-repo-url https://kubernetes.oss-cn-hangzhou.aliyuncs.com/charts
 
 ## istio 模板渲染
 

@@ -928,5 +928,33 @@ docker logs  --  crictl logs
 
 参考：https://zhuanlan.zhihu.com/p/341921409
 
+## google cloudshell
+
+google的免费线上Linux环境，浏览器登录Google账户就能直接打开了，主要是网是通的，可以拉取需要翻墙的镜像
+
+google cloudshell：https://console.cloud.google.com/cloudshell
+
+查看某个项目下的镜像
+
+gcloud container images list --project google-containers
+gcloud container images list --project kubernetes-helm
+
+查看某个仓库所有镜像
+
+gcloud container images list --repository=gcr.io/google-containers
+
+查看某个镜像所有tag
+
+gcloud container images list-tags gcr.io/google-containers/metrics-server
+
+gcloud container images list --repository=k8s.gcr.io/metrics-server
+gcloud container images list-tags k8s.gcr.io/metrics-server/metrics-server
+
+gcloud container images list-tags \
+  k8s.gcr.io/metrics-server/metrics-server \
+  --format="table(TAGS)" \
+  --filter="tags:*" | grep -v TAGS
+
+
 
 
